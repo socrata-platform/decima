@@ -46,3 +46,11 @@ curl -X PUT -H 'Content-Type: application/json' \
     http://localhost:8080/deploy
 ```
 
+## Questions / TODOs ##
+* Configuration:
+    * c3p0
+    * Docker
+    * Postgres vs. RDS
+* RDS
+* Docker deployment
+* 

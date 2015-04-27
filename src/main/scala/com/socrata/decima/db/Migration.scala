@@ -1,4 +1,4 @@
-package com.socrata.lachesis.db
+package com.socrata.decima.lachesis.db
 
 import java.sql.Connection
 import liquibase.Liquibase

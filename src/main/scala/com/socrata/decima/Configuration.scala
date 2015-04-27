@@ -1,4 +1,4 @@
-package com.socrata.lachesis
+package com.socrata.decima
 
 import com.typesafe.config.ConfigFactory
 

@@ -1,4 +1,4 @@
-package com.socrata.lachesis
+package com.socrata.decima
 
 import org.scalatra._
 import scalate.ScalateSupport
@@ -7,7 +7,7 @@ import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import javax.servlet.http.HttpServletRequest
 import collection.mutable
 
-trait LachesisStack extends ScalatraServlet with ScalateSupport {
+trait DecimaStack extends ScalatraServlet with ScalateSupport {
 
   /* wire up the precompiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")

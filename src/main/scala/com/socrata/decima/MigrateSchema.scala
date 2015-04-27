@@ -1,10 +1,10 @@
 //
-//package com.socrata.lachesis
+//package com.socrata.decima.lachesis
 //
 //import com.typesafe.config.ConfigFactory
-//import com.socrata.lachesis.config.LachesisConfig
-//import com.socrata.lachesis.db.Migration
-//import com.socrata.lachesis.db.Migration.{Migrate, Undo, Redo}
+//import com.socrata.decima.lachesis.config.LachesisConfig
+//import com.socrata.decima.lachesis.db.Migration
+//import com.socrata.decima.lachesis.db.Migration.{Migrate, Undo, Redo}
 //
 //object MigrateSchema extends App {
 //

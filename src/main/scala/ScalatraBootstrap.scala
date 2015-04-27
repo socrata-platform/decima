@@ -1,4 +1,4 @@
-import com.socrata.lachesis._
+import com.socrata.decima.lachesis._
 import com.typesafe.config.ConfigFactory
 import org.scalatra._
 import javax.servlet.ServletContext

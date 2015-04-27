@@ -1,4 +1,4 @@
-package com.socrata.lachesis
+package com.socrata.decima
 
 // JSON-related libraries
 
@@ -16,7 +16,7 @@ import org.scalatra.json._
 
 import org.scalatra.ScalatraServlet
 
-import com.socrata.lachesis.model.{Deploy, DeploysTable}
+import com.socrata.decima.model.{Deploy, DeploysTable}
 
 /**
  * Created by michaelbrown on 4/22/15.

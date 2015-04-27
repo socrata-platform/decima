@@ -5,16 +5,16 @@ import org.scalatra.sbt.PluginKeys._
 import com.mojolly.scalate.ScalatePlugin._
 import ScalateKeys._
 
-object LachesisBuild extends Build {
+object DecimaBuild extends Build {
   val Organization = "com.socrata"
-  val Name = "lachesis"
+  val Name = "decima"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.6"
   val ScalatraVersion = "2.3.1"
   val LiquibaseVersion = "3.3.2"
 
   lazy val project = Project (
-    "lachesis",
+    "decima",
     file("."),
     settings = ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := Organization,

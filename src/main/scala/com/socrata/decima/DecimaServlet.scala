@@ -1,6 +1,6 @@
-package com.socrata.lachesis
+package com.socrata.decima
 
-class LachesisServlet extends LachesisStack {
+class DecimaServlet extends LachesisStack {
 
   get("/") {
     <html>

@@ -1,4 +1,4 @@
-package com.socrata.lachesis.model
+package com.socrata.decima.lachesis.model
 
 import java.sql.Timestamp
 

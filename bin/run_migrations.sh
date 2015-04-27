@@ -16,4 +16,4 @@ if [ ! -e $JARFILE ]; then
 fi
 COMMAND=${1:-migrate}
 echo Running MigrateSchema $COMMAND $2...
-java -Dconfig.file=$CONFIG -cp $JARFILE com.socrata.lachesis.db.MigrateSchema $COMMAND $2
+java -Dconfig.file=$CONFIG -cp $JARFILE com.socrata.decima.lachesis.db.MigrateSchema $COMMAND $2
