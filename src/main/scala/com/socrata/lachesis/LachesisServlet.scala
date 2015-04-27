@@ -1,8 +1,5 @@
 package com.socrata.lachesis
 
-import org.scalatra._
-import scalate.ScalateSupport
-
 class LachesisServlet extends LachesisStack {
 
   get("/") {

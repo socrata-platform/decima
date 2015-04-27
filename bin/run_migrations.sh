@@ -10,7 +10,6 @@ else
     echo "Using configuration file specified in LACHESIS_CONFIG environment variable"
     CONFIG=$LACHESIS_CONFIG
 fi
-#TODO: Fix JARFILE
 JARFILE=$BASEDIR/soda-fountain-jetty/target/scala-2.1l/lachesis-assembly-*.jar
 if [ ! -e $JARFILE ]; then
   cd $BASEDIR && sbt assembly

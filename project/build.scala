@@ -23,6 +23,7 @@ object LachesisBuild extends Build {
       scalaVersion := ScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+      resolvers += "Socrata Cloudbees" at "https://repository-socrata-oss.forge.cloudbees.com/release",
       resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns),
       libraryDependencies ++= Seq(
         "org.scalatra" %% "scalatra" % ScalatraVersion,
@@ -30,15 +31,17 @@ object LachesisBuild extends Build {
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "org.scalatra" %% "scalatra-json" % ScalatraVersion,
         "org.json4s"   %% "json4s-jackson" % "3.3.0.RC1",
-        "com.typesafe.slick" %% "slick" % "3.0.0-RC1",
-        "com.h2database" % "h2" % "1.4.181",
+        "com.typesafe.slick" %% "slick" % "2.1.0",
+        "org.slf4j" % "slf4j-api" % "1.7.10",
         "c3p0" % "c3p0" % "0.9.1.2",
         "ch.qos.logback" % "logback-classic" % "1.1.2" % "runtime",
-        "org.eclipse.jetty" % "jetty-webapp" % "9.1.5.v20140505" % "container",
+        "org.eclipse.jetty" % "jetty-webapp" % "9.1.5.v20140505" % "container;compile",
         "org.eclipse.jetty" % "jetty-plus" % "9.1.5.v20140505" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0",
         "org.liquibase" % "liquibase-core" % LiquibaseVersion,
-        "org.liquibase" % "liquibase-maven-plugin" % LiquibaseVersion
+        "org.liquibase" % "liquibase-maven-plugin" % LiquibaseVersion,
+        "com.typesafe" % "config" % "1.2.1",
+        "org.postgresql" % "postgresql" % "9.4-1201-jdbc4"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
