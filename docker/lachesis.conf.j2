@@ -1,0 +1,21 @@
+service {
+  host = "localhost"
+  port = 7474
+}
+
+//db {
+//  host = "localhost"
+//  port = 5342
+//  name = "lachesis"
+//  user = "blist"
+//  password = "blist"
+//}c3p0.driverClass=org.postgresql.Driver
+
+c3p0 {
+  jdbcUrl = "jdbc:postgresql://172.17.42.1:5432/lachesis"
+  user = "blist"
+  password = "blist"
+  minPoolSize = 1
+  acquireIncrement = 1
+  maxPoolSize = 50
+}
