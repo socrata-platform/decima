@@ -3,7 +3,6 @@
 ## Build & Run ##
 
 ```sh
-$ cd Lachesis
 $ ./sbt
 > container:start
 > browse
