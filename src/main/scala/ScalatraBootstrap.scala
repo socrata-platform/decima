@@ -1,4 +1,4 @@
-import com.socrata.decima.lachesis._
+import com.socrata.decima._
 import com.typesafe.config.ConfigFactory
 import org.scalatra._
 import javax.servlet.ServletContext
@@ -19,7 +19,7 @@ class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
     val db = Database.forDataSource(cpds)
     context.mount(new DeployController(db), "/deploy/*")
-    context.mount(new LachesisServlet, "/*")
+    context.mount(new DecimaServlet, "/*")
   }
 
   private def closeDbConnection() {
