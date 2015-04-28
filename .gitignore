@@ -1,6 +1,9 @@
 *.class
 *.log
 
+# don't keep docker artifacts
+docker/*.jar
+
 # sbt specific
 .cache
 .history
