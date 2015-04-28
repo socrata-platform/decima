@@ -1,5 +1,5 @@
 import com.socrata.decima._
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config._
 import org.scalatra._
 import javax.servlet.ServletContext
 
@@ -12,8 +12,12 @@ class ScalatraBootstrap extends LifeCycle {
   val logger = LoggerFactory.getLogger(getClass)
 
   println(Class.forName("org.postgresql.Driver"))
-  val cpds = new ComboPooledDataSource("c3p0")
+  val cpds = new ComboPooledDataSource
+  // TODO: This config stuff should be automatic?
   logger.info("Created c3p0 connection pool")
+  cpds.setJdbcUrl(DecimaConfig.db.jdbcUrl)
+  cpds.setUser(DecimaConfig.db.user)
+  cpds.setPassword(DecimaConfig.db.password)
   logger.info("JDBC URL: " + cpds.getJdbcUrl)
 
   override def init(context: ServletContext) {
