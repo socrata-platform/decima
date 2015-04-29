@@ -1,7 +1,9 @@
 # decima #
+A service to track deployments and service versions across environments.
 
 ## Build & Run ##
 
+Locally:
 ```sh
 $ ./sbt
 > container:start
@@ -12,29 +14,18 @@ If `browse` doesn't launch your browser, manually open [http://localhost:8080/](
 
 * auto-compile on save: `> ~ ;copy-resources;aux-compile`
 
-## Create tables ##
+Docker:
+* See the Docker [README](docker/README.md) for information on creating the container.
+* The service runs on port 7474, or in Marathon at http://decima.app.marathon.[environment].socrata.net
 
-```sql
-create table deploys (
-    id serial primary key,
-    service varchar(128),
-    environment varchar(128),
-    version varchar(128),
-    git varchar(128),
-    timestamp timestamp default now());
-```
+## Querying version and deployment info ##
+* **/deploy**: returns a JSON array of the current state of services in all environments.
+* **/deploy/history**: returns a JSON array of the last N deploys (defaults to 100)
 
-## Queries ##
-
-Get the latest versions of each service in each environment:
-```sql
-select a.id, a.service, a.environment, b.version, b.git, b.timestamp
-from (
-select distinct deploys.service, deploys.environment, max(deploys.id) as id
-from deploys
-group by deploys.service, deploys.environment) a, deploys b
-where a.id = b.id;
-```
+#### Query Params ####
+* environment: filter by environment
+* service: filter by service name
+* limit: number of deploys to return (history only)
 
 ## Reporting a deploy event ##
 
@@ -45,6 +36,20 @@ curl -X PUT -H 'Content-Type: application/json' \
     http://localhost:8080/deploy
 ```
 
+## Setup Database ##
+
+Decima expects the following table for persistence:
+```sql
+create table deploys (
+    id serial primary key,
+    service varchar(128),
+    environment varchar(128),
+    version varchar(128),
+    git varchar(128),
+    deployed_by varchar(128),
+    deployed_at timestamp default now());
+```
+
 ## Questions / TODOs ##
 * Configuration:
     * c3p0
@@ -52,4 +57,4 @@ curl -X PUT -H 'Content-Type: application/json' \
     * Postgres vs. RDS
 * RDS
 * Docker deployment
-* 
+*

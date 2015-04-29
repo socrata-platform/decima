@@ -13,7 +13,8 @@ case class Deploy(id: Option[Int],
                   environment: String,
                   version: String,
                   git: Option[String],
-                  timestamp: Option[Timestamp])
+                  deployedBy: String,
+                  deployedAt: Option[Timestamp])
 
 class DeploysTable(tag: Tag) extends Table[Deploy](tag, "deploys") {
   def id = column[Option[Int]]("id", O.AutoInc)
@@ -21,7 +22,8 @@ class DeploysTable(tag: Tag) extends Table[Deploy](tag, "deploys") {
   def environment = column[String]("environment")
   def version = column[String]("version")
   def git = column[Option[String]]("git")
-  def timestamp = column[Option[Timestamp]]("timestamp", O.AutoInc)
+  def deployedBy = column[String]("deployed_by")
+  def deployedAt = column[Option[Timestamp]]("deployed_at", O.AutoInc)
 
-  def * = (id, service, environment, version, git, timestamp) <> (Deploy.tupled, Deploy.unapply)
+  def * = (id, service, environment, version, git, deployedBy, deployedAt) <> (Deploy.tupled, Deploy.unapply)
 }

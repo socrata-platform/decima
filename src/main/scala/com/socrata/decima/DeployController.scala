@@ -1,7 +1,7 @@
 package com.socrata.decima
 
 import com.socrata.decima.model.{Deploy, DeploysTable}
-import org.json4s.{DefaultFormats, Formats}
+import org.json4s.{JValue, DefaultFormats, Formats}
 import org.scalatra.ScalatraServlet
 import org.scalatra.json._
 import org.slf4j.LoggerFactory
@@ -27,9 +27,9 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
   val limitParamKey = "limit"
 
   // TODO: shouldn't this be put in the Deploy model somehow
-  implicit val getDeployResult = GetResult(r => Deploy(r.<<, r.<<, r.<<, r.<<, r.<<?, r.<<))
+  implicit val getDeployResult = GetResult(r => Deploy(r.<<, r.<<, r.<<, r.<<, r.<<?, r.<<, r.<<))
   val currentDeployment = Q.queryNA[Deploy]("""
-    select a.id, a.service, a.environment, b.version, b.git, b.timestamp
+    select a.id, a.service, a.environment, b.version, b.git, b.deployed_by, b.deployed_at
       from (
       select distinct deploys.service, deploys.environment, max(deploys.id) as id
       from deploys
@@ -40,6 +40,8 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
   // Sets up automatic case class to JSON output serialization, required by
   // the JValueResult trait.
   protected implicit val jsonFormats: Formats = DefaultFormats
+  protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
+  protected override def transformResponseBody(body: JValue): JValue = body.underscoreKeys
 
   // Before every action runs, set the content type to be in JSON format.
   before() {
@@ -108,7 +110,7 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
       }).filter(row => environmentName match {
         case _: String => row.environment === environmentName
         case null => LiteralColumn(true)
-      }).sortBy(row => row.timestamp.desc).take(limit)
+      }).sortBy(row => row.deployedAt.desc).take(limit)
 
       logger.info("Generated SQL for base Deploys query:\n" + query.selectStatement)
       query.run
