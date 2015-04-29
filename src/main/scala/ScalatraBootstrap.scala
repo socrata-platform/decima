@@ -27,7 +27,7 @@ class ScalatraBootstrap extends LifeCycle {
    * Initialize app and set routing configuration
    * @param context
    */
-  override def init(context: ServletContext) {
+  override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds)
     context.mount(new DeployController(db), "/deploy/*")
     context.mount(new DecimaServlet, "/*")
@@ -36,7 +36,7 @@ class ScalatraBootstrap extends LifeCycle {
   /**
    * Clean up database connection, called in destroy func
    */
-  private def closeDbConnection() {
+  private def closeDbConnection(): Unit = {
     logger.info("Closing c3p0 connection pool")
     cpds.close
   }
@@ -45,7 +45,7 @@ class ScalatraBootstrap extends LifeCycle {
    * Destroys app on shutdown of service
    * @param context
    */
-  override def destroy(context: ServletContext) {
+  override def destroy(context: ServletContext): Unit = {
     super.destroy(context)
     closeDbConnection
   }

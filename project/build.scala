@@ -8,7 +8,6 @@ import ScalateKeys._
 object DecimaBuild extends Build {
   val Organization = "com.socrata"
   val Name = "decima"
-  val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.6"
   val ScalatraVersion = "2.3.1"
   val LiquibaseVersion = "3.3.2"
@@ -19,7 +18,6 @@ object DecimaBuild extends Build {
     settings = ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := Organization,
       name := Name,
-      version := Version,
       scalaVersion := ScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",

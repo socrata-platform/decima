@@ -10,18 +10,18 @@ import org.scalatra.servlet.ScalatraListener
  * JettyLauncher class to enable launching the service from a standalone JAR
  * specified in the SBT build configuration
  */
-object JettyLauncher {
-  def main(args: Array[String]) {
-    val server = new Server(DecimaConfig.App.port)
-    val context = new WebAppContext()
+object JettyLauncher extends App {
+  private val rootPath = "/"
 
-    context setContextPath "/"
-    context.setResourceBase("src/main/webapp")
-    context.addEventListener(new ScalatraListener)
-    context.addServlet(classOf[DefaultServlet], "/")
+  val server = new Server(DecimaConfig.App.port)
+  val context = new WebAppContext()
 
-    server.setHandler(context)
-    server.start
-    server.join
-  }
+  context setContextPath rootPath
+  context.setResourceBase("src/main/webapp")
+  context.addEventListener(new ScalatraListener)
+  context.addServlet(classOf[DefaultServlet], rootPath)
+
+  server.setHandler(context)
+  server.start
+  server.join
 }

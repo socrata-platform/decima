@@ -32,7 +32,7 @@ Docker:
 PUT to /deploy endpoint with a body containing the relevant information
 ```sh
 curl -X PUT -H 'Content-Type: application/json' \
-    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "git": "optional"}' \
+    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "git": "optional", "deployed_by": "autoprod"}' \
     http://localhost:8080/deploy
 ```
 

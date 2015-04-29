@@ -9,7 +9,7 @@ import com.typesafe.config.ConfigFactory
 /**
  * The DecimaConfig object loads configuration settings from
  * the 'reference.conf' file in the project and will merge it with
- * a configuration file specified in -Dconfig.file
+ * a configuration file specified in -Dconfig.file JAVA arg
  */
 object DecimaConfig {
 

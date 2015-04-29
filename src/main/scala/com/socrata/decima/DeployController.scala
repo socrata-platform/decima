@@ -31,22 +31,31 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
   val currentDeployment = Q.queryNA[Deploy]("""
     select a.id, a.service, a.environment, b.version, b.git, b.deployed_by, b.deployed_at
       from (
-      select distinct deploys.service, deploys.environment, max(deploys.id) as id
-      from deploys
-      group by deploys.service, deploys.environment) a, deploys b
+        select distinct deploys.service, deploys.environment, max(deploys.id) as id
+        from deploys
+        group by deploys.service, deploys.environment) a,
+      deploys b
       where a.id = b.id
     """)
 
+  // TODO: put this into a trait or base class
   // Sets up automatic case class to JSON output serialization, required by
   // the JValueResult trait.
   protected implicit val jsonFormats: Formats = DefaultFormats
-  protected override def transformRequestBody(body: JValue): JValue = body.camelizeKeys
-  protected override def transformResponseBody(body: JValue): JValue = body.underscoreKeys
+  override protected def transformRequestBody(body: JValue): JValue = body.camelizeKeys
+  override protected def transformResponseBody(body: JValue): JValue = body.underscoreKeys
 
   // Before every action runs, set the content type to be in JSON format.
   before() {
     contentType = formats("json")
   }
+
+  // TODO: add an error handler (this should go in base class, too)
+  error {
+    case e: Exception => // define behavior
+  }
+
+  // TODO: look up commands in scalatra
 
   /**
    * A GET call to /deploy will return a JSON array of the latest deploy of each service
@@ -54,17 +63,17 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
    * service: name of the service to return deploy information for
    * environment: environment to return deploy information for
    */
-  get("/") {
+  get("/") { // scalastyle:ignore multiple.string.literals
     logger.info("/deploy get request with params: " + params.toString)
-    val serviceName = params.getOrElse(serviceParamKey, None)
-    val environmentName = params.getOrElse(environmentParamKey, None)
+    val serviceName = params.get(serviceParamKey)
+    val environmentName = params.get(environmentParamKey)
 
     db.withSession { implicit session =>
       currentDeployment.list.filter(row => serviceName match {
-        case _: String => row.service == serviceName
+        case Some(s) => row.service == s
         case None => true
       }).filter(row => environmentName match {
-        case _: String => row.environment == environmentName
+        case Some(e) => row.environment == e
         case None => true
       }).sortBy(d  => (d.environment, d.service))
     }
@@ -98,18 +107,18 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
   get("/history") {
     logger.info("/deploy/history get request with params:" + params.toString)
 
-    val serviceName = params.getOrElse(serviceParamKey, null)
-    val environmentName = params.getOrElse(environmentParamKey, null)
-    val limit = params.getOrElse(limitParamKey, "100").toInt
+    val serviceName = params.get(serviceParamKey)
+    val environmentName = params.get(environmentParamKey)
+    val limit = params.getOrElse(limitParamKey, "100").toInt // TODO: move 100 to const
 
     db.withSession { implicit session =>
 
       val query = deploys.filter(row => serviceName match {
-        case _: String => row.service === serviceName
-        case null => LiteralColumn(true)
+        case Some(s) => row.service === s
+        case None => LiteralColumn(true)
       }).filter(row => environmentName match {
-        case _: String => row.environment === environmentName
-        case null => LiteralColumn(true)
+        case Some(e) => row.environment === e
+        case None => LiteralColumn(true)
       }).sortBy(row => row.deployedAt.desc).take(limit)
 
       logger.info("Generated SQL for base Deploys query:\n" + query.selectStatement)
