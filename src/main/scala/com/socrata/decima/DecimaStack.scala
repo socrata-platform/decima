@@ -1,11 +1,13 @@
 package com.socrata.decima
 
-import org.scalatra._
-import scalate.ScalateSupport
-import org.fusesource.scalate.{ TemplateEngine, Binding }
-import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import javax.servlet.http.HttpServletRequest
-import collection.mutable
+
+import org.fusesource.scalate.TemplateEngine
+import org.fusesource.scalate.layout.DefaultLayoutStrategy
+import org.scalatra._
+import org.scalatra.scalate.ScalateSupport
+
+import scala.collection.mutable
 
 trait DecimaStack extends ScalatraServlet with ScalateSupport {
 

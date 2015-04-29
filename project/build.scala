@@ -28,8 +28,10 @@ object DecimaBuild extends Build {
       libraryDependencies ++= Seq(
         "org.scalatra" %% "scalatra" % ScalatraVersion,
         "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
-        "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "org.scalatra" %% "scalatra-json" % ScalatraVersion,
+        "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
+        "org.scalatra" %% "scalatra-scalatest" % ScalatraVersion % "test",
+        "org.scalatest" %% "scalatest" % "2.2.4" % "test",
         "org.json4s"   %% "json4s-jackson" % "3.3.0.RC1",
         "com.typesafe.slick" %% "slick" % "2.1.0",
         "org.slf4j" % "slf4j-api" % "1.7.10",

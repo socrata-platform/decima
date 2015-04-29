@@ -34,7 +34,7 @@ deploys = [
 deploys.each do |d|
   puts 'adding deploy event: ' + d.to_json
   HTTParty.put(
-    'http://localhost:7474/deploy',
+    'http://decima.app.marathon.aws-us-west-2-staging.socrata.net/deploy',
     body: d.to_json,
     headers: { 'Content-Type' => 'application/json' }
   )
