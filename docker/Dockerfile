@@ -21,6 +21,7 @@ ENV PG_DB_HOST localhost
 ENV PG_DB_PORT 5432
 ENV PG_DB_NAME decima
 ENV PG_DB_USER decima
+ENV PG_DB_PASSWORD_LINE ""
 
 # Log Settings.
 ENV LOG_LEVEL info
