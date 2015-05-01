@@ -6,6 +6,9 @@ package com.socrata.decima
 class DecimaServlet extends DecimaStack {
 
   get("/") {
+    before() {
+      contentType = formats("html")
+    }
     <html>
       <body>
         <h1>Hello, world!</h1>
@@ -18,5 +21,13 @@ class DecimaServlet extends DecimaStack {
       </body>
     </html>
   }
+
+//  get("/version") {
+//    Map("version" -> BuildInfo.version,
+//      "scalaVersion" -> BuildInfo.scalaVersion,
+//      "dependencies" -> BuildInfo.libraryDependencies,
+//      "buildTime" -> new org.joda.time.DateTime(BuildInfo.buildTime).toString())
+//    )
+//  }
 
 }

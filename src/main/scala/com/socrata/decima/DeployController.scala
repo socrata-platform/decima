@@ -17,9 +17,8 @@ import scala.slick.lifted.TableQuery
  * services in an environment and getting the deploy history.
  * @param db  the database object to use for persistence.
  */
-class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJsonSupport {
+class DeployController(db: DatabaseDef) extends DecimaStack {
 
-  val logger = LoggerFactory.getLogger(getClass)
   val deploys = TableQuery[DeploysTable]
 
   val serviceParamKey = "service"
@@ -38,22 +37,6 @@ class DeployController(db: DatabaseDef) extends ScalatraServlet with JacksonJson
       where a.id = b.id
     """)
 
-  // TODO: put this into a trait or base class
-  // Sets up automatic case class to JSON output serialization, required by
-  // the JValueResult trait.
-  protected implicit val jsonFormats: Formats = DefaultFormats
-  override protected def transformRequestBody(body: JValue): JValue = body.camelizeKeys
-  override protected def transformResponseBody(body: JValue): JValue = body.underscoreKeys
-
-  // Before every action runs, set the content type to be in JSON format.
-  before() {
-    contentType = formats("json")
-  }
-
-  // TODO: add an error handler (this should go in base class, too)
-  error {
-    case e: Exception => // define behavior
-  }
 
   // TODO: look up commands in scalatra
 

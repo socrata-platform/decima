@@ -5,3 +5,5 @@ addSbtPlugin("org.scalatra.sbt" % "scalatra-sbt" % "0.3.5")
 // addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")
 
 addSbtPlugin("com.socrata" % "socrata-sbt-plugins" % "1.4.3")
+
+//addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.4.0")
