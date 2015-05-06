@@ -7,7 +7,7 @@ class DecimaServlet extends DecimaStack {
 
   get("/") {
     before() {
-      contentType = formats("html")
+      contentType = formats("html") // scalastyle:ignore multiple.string.literals
     }
     after() {
       contentType = formats("html")

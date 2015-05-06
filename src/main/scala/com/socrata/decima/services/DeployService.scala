@@ -14,6 +14,7 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
   val serviceParamKey = "service"
   val environmentParamKey = "environment"
   val limitParamKey = "limit"
+  val defaultLimit = 100
 
   // TODO: look up commands in scalatra
 
@@ -28,9 +29,7 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
     val serviceName = params.get(serviceParamKey)
     val environmentName = params.get(environmentParamKey)
 
-    val deploys = deployAccess.currentDeploymentState(environmentName, serviceName)
-    println(deploys.head)
-    deploys
+    deployAccess.currentDeploymentState(environmentName, serviceName)
   }
 
   /**
@@ -60,8 +59,8 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
 
     val serviceName = params.get(serviceParamKey)
     val environmentName = params.get(environmentParamKey)
-//    val limit = params.getOrElse(limitParamKey, "100").toInt // TODO: move 100 to const
+    val limit = params.getOrElse(limitParamKey, defaultLimit.toString).toInt
 
-    deployAccess.deploymentHistory(environmentName, serviceName)
+    deployAccess.deploymentHistory(environmentName, serviceName, limit)
   }
 }

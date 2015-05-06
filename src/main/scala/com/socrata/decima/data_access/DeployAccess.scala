@@ -8,7 +8,7 @@ import slick.driver.PostgresDriver.simple.Database
 trait DeployAccess {
   def createDeploy(deploy:DeployForCreate):Either[Exception, Deploy]
   def currentDeploymentState(environment:Option[String], service:Option[String]):Seq[Deploy]
-  def deploymentHistory(environment:Option[String], service:Option[String]):Seq[Deploy]
+  def deploymentHistory(environment:Option[String], service:Option[String], limit: Int):Seq[Deploy]
 }
 
 case class DeployAccessWithPostgres(db:Database, dao:DeployDAO with DatabaseDriver) extends DeployAccess {
@@ -20,13 +20,13 @@ case class DeployAccessWithPostgres(db:Database, dao:DeployDAO with DatabaseDriv
 
   override def currentDeploymentState(environment: Option[String], service: Option[String]): Seq[Deploy] = {
     db.withSession { implicit session =>
-      dao.currentDeployment
+      dao.currentDeployment(environment, service)
     }
   }
 
-  override def deploymentHistory(environment: Option[String], service: Option[String]): Seq[Deploy] = {
+  override def deploymentHistory(environment: Option[String], service: Option[String], limit: Int): Seq[Deploy] = {
     db.withSession { implicit session =>
-      dao.deploymentHistory(10)
+      dao.deploymentHistory(environment, service, limit)
     }
   }
 }

@@ -2,7 +2,7 @@ package com.socrata.decima.models
 
 import org.joda.time.DateTime
 
-case class Deploy(id: Int,
+case class Deploy(id: Long,
                    service: String,
                    environment: String,
                    version: String,

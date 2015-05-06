@@ -11,45 +11,44 @@ import scala.slick.jdbc.{GetResult, StaticQuery}
 trait DeployTable {
   self: DatabaseDriver =>
 
-  import self.driver.simple._
+  import self.driver.simple._ // scalastyle:ignore import.grouping
 
-  case class DeployRow(id: Int,
-                    service: String,
-                    environment: String,
-                    version: String,
-                    git : Option[String],
-                    deployedBy: String,
-                    deployedAt: Timestamp)
+  case class DeployRow(id: Long,
+                       service: String,
+                       environment: String,
+                       version: String,
+                       git: Option[String],
+                       deployedBy: String,
+                       deployedAt: Timestamp)
 
   class Deploys(tag: Tag) extends Table[DeployRow](tag, "deploys") {
-    def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // primary key column
+    // scalastyle:off
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc) // primary key column
     def service = column[String]("service")
     def environment = column[String]("environment")
     def version = column[String]("version")
     def git = column[Option[String]]("git")
     def deployedBy = column[String]("deployed_by")
     def deployedAt = column[Timestamp]("deployed_at")
-
-    def * = (id, service, environment, version, git, deployedBy, deployedAt) <> (DeployRow.tupled, DeployRow.unapply)
-
+    def * = (id, service, environment, version, git, deployedBy, deployedAt) <>(DeployRow.tupled, DeployRow.unapply)
+    // scalastyle:on
   }
 
-  def rowToModelDeploy(row:DeployRow): Deploy = {
-    Deploy(row.id, row.service, row.environment, row.version, row.git, row.deployedBy, TimeUtils.toJodaTime(row.deployedAt))
+  def rowToModelDeploy(row: DeployRow): Deploy = {
+    Deploy(row.id,
+      row.service,
+      row.environment,
+      row.version,
+      row.git,
+      row.deployedBy,
+      TimeUtils.toJodaTime(row.deployedAt))
   }
 
   val deployTable = TableQuery[Deploys]
 
-  object DeployCompiledQueries {
-    private def lookupByIdQuery(id:Column[Int]) = deployTable.filter(d => d.id === id)
-    val lookup = Compiled(lookupByIdQuery _)
+  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
 
-    private def deploymentHistoryQuery(n:ConstColumn[Long]) = deployTable.sortBy(_.deployedAt).take(n)
-    val deploymentHistory = Compiled(deploymentHistoryQuery _)
-
-    implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
-    def currentDeployment = {
-      StaticQuery.queryNA[DeployRow]("""
+  val currentDeploymentQuery = StaticQuery.queryNA[DeployRow]( """
                                   select a.id, a.service, a.environment, b.version, b.git, b.deployed_by, b.deployed_at
                                   from (
                                     select distinct deploys.service, deploys.environment, max(deploys.id) as id
@@ -57,7 +56,10 @@ trait DeployTable {
                                     group by deploys.service, deploys.environment) a,
                                   deploys b
                                   where a.id = b.id""")
-    }
-  }
 
+  object DeployCompiledQueries {
+    private def lookupByIdQuery(id: Column[Long]) = deployTable.filter(d => d.id === id)
+
+    val lookup = Compiled(lookupByIdQuery _)
+  }
 }

@@ -21,7 +21,10 @@ trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraL
   error {
     case e: Exception =>
       logger.error("Request error: ", e)
-      InternalServerError(ErrorMessage(error = true, e.getClass.getSimpleName, e.getMessage, e.getStackTrace.map(s => s.toString)))
+      InternalServerError(ErrorMessage(error = true,
+                                        e.getClass.getSimpleName,
+                                        e.getMessage,
+                                        e.getStackTrace.map(s => s.toString)))
   }
 
 }
