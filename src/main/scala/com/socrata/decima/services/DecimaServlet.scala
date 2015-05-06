@@ -1,4 +1,4 @@
-package com.socrata.decima
+package com.socrata.decima.services
 
 /**
  * DecimaServlet serves the landing page for Decima
@@ -7,6 +7,9 @@ class DecimaServlet extends DecimaStack {
 
   get("/") {
     before() {
+      contentType = formats("html")
+    }
+    after() {
       contentType = formats("html")
     }
     <html>

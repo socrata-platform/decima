@@ -1,22 +1,15 @@
-package com.socrata.decima
+package com.socrata.decima.services
 
-import javax.servlet.http.HttpServletRequest
-
-import org.fusesource.scalate.TemplateEngine
-import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import org.json4s._
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
-import org.scalatra.scalate.ScalateSupport
 import org.slf4j.LoggerFactory
-
-import scala.collection.mutable
 
 trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraLogging {
 
   // Sets up automatic case class to JSON output serialization, required by
   // the JValueResult trait.
-  protected implicit val jsonFormats: Formats = DefaultFormats
+  protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
   override protected def transformRequestBody(body: JValue): JValue = body.camelizeKeys
   override protected def transformResponseBody(body: JValue): JValue = body.underscoreKeys
 
@@ -28,7 +21,7 @@ trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraL
   error {
     case e: Exception =>
       logger.error("Request error: ", e)
-      InternalServerError(s"${e.getClass.getSimpleName}: ${e.getMessage}\n${e.getStackTrace}\n")
+      InternalServerError(ErrorMessage(error = true, e.getClass.getSimpleName, e.getMessage, e.getStackTrace.map(s => s.toString)))
   }
 
 }
@@ -45,3 +38,5 @@ trait ScalatraLogging extends ScalatraServlet {
     logger.info("Status - " + response.getStatus)
   }
 }
+
+case class ErrorMessage(error: Boolean, exception: String, message: String, stackTrace: Array[String])

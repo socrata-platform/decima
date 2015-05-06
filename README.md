@@ -47,7 +47,7 @@ create table deploys (
     version varchar(128),
     git varchar(128),
     deployed_by varchar(128),
-    deployed_at timestamp default now());
+    deployed_at timestamp);
 ```
 
 ## Questions / TODOs ##

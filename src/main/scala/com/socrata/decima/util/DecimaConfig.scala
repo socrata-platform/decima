@@ -1,10 +1,6 @@
-package com.socrata.decima
+package com.socrata.decima.util
 
 import com.typesafe.config.ConfigFactory
-
-/**
- * Created by michaelbrown on 4/23/15.
- */
 
 /**
  * The DecimaConfig object loads configuration settings from
