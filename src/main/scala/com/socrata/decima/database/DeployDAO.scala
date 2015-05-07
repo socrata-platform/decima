@@ -9,6 +9,8 @@ class DeployDAO extends DeployTable {
 
   import driver.simple._ // scalastyle:ignore import.grouping
 
+  val defaultHistoryLimit = 100
+
   def createDeploy(deploy: DeployForCreate)(implicit session: Session): Either[Exception, Deploy] = {
     session.withTransaction {
       val now = TimeUtils.now
@@ -16,8 +18,9 @@ class DeployDAO extends DeployTable {
                                                                               deploy.service,
                                                                               deploy.environment,
                                                                               deploy.version,
-                                                                              deploy.git,
+                                                                              deploy.revision,
                                                                               deploy.deployedBy,
+                                                                              deploy.deployMethod,
                                                                               TimeUtils.asTimestamp(now))
       val newDeploy = DeployCompiledQueries.lookup(newId).run.headOption
       newDeploy match {
@@ -27,9 +30,17 @@ class DeployDAO extends DeployTable {
     }
   }
 
+  def lookup(id: Long)(implicit session:Session): Either[Exception, Deploy] = {
+    val deploy = DeployCompiledQueries.lookup(id).run.headOption
+    deploy match {
+      case Some(d) => Right(rowToModelDeploy(d))
+      case None => Left(new RuntimeException("Deploy not found with id: " + id))
+    }
+  }
+
   def deploymentHistory(environment: Option[String],
                         service: Option[String],
-                        limit: Int)(implicit session: Session): Seq[Deploy] = {
+                        limit: Int = defaultHistoryLimit)(implicit session: Session): Seq[Deploy] = {
     val res = deployTable.filter(row =>
       environment match {
         case Some(e) => row.environment === e

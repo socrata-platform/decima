@@ -1,9 +1,9 @@
 package com.socrata.decima.database
 
-import scala.slick.driver.PostgresDriver
+import scala.slick.driver.{JdbcDriver, PostgresDriver}
 
 trait DatabaseDriver {
-  val driver:PostgresDriver
+  val driver:JdbcDriver
 }
 
 trait ActualPostgresDriver extends DatabaseDriver {

@@ -25,7 +25,6 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
    * environment: environment to return deploy information for
    */
   get("/") { // scalastyle:ignore multiple.string.literals
-    logger.info("/deploy get request with params: " + params.toString)
     val serviceName = params.get(serviceParamKey)
     val environmentName = params.get(environmentParamKey)
 
@@ -40,10 +39,8 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
    * "git": the git SHA of the deploy
    */
   put("/") {
-    logger.info("/deploy put request")
-    logger.info(parsedBody.toString)
-
     val deploy = parsedBody.extract[DeployForCreate]
+
     deployAccess.createDeploy(deploy)
   }
 
@@ -55,8 +52,6 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
    * limit: override the default number of deploy events to return
    */
   get("/history") {
-    logger.info("/deploy/history get request with params:" + params.toString)
-
     val serviceName = params.get(serviceParamKey)
     val environmentName = params.get(environmentParamKey)
     val limit = params.getOrElse(limitParamKey, defaultLimit.toString).toInt

@@ -2,9 +2,12 @@ import sbt._
 import Keys._
 import org.scalatra.sbt._
 import com.mojolly.scalate.ScalatePlugin._
+import sbtassembly.AssemblyKeys
+import AssemblyKeys._
 
 object DecimaBuild extends Build {
   private val ScalatraVersion = "2.3.1"
+  private val JettyVersion = "9.1.5.v20140505"
 
   lazy val project = Project (
     "decima",
@@ -13,6 +16,8 @@ object DecimaBuild extends Build {
       organization := "com.socrata",
       name := "decima",
       scalaVersion := "2.11.6",
+      mainClass in (Compile, run) := Some("com.socrata.JettyLauncher"),
+      mainClass in assembly := Some("com.socrata.JettyLauncher"),
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       resolvers += "Socrata Cloudbees" at "https://repository-socrata-oss.forge.cloudbees.com/release",
@@ -29,11 +34,12 @@ object DecimaBuild extends Build {
         "org.slf4j"           % "slf4j-api"             % "1.7.10",
         "c3p0"                % "c3p0"                  % "0.9.1.2",
         "ch.qos.logback"      % "logback-classic"       % "1.1.2"             % "runtime",
-        "org.eclipse.jetty"   % "jetty-webapp"          % "9.1.5.v20140505"   % "container;compile",
-        "org.eclipse.jetty"   % "jetty-plus"            % "9.1.5.v20140505"   % "container",
+        "org.eclipse.jetty"   % "jetty-webapp"          % JettyVersion        % "container;compile",
+        "org.eclipse.jetty"   % "jetty-plus"            % JettyVersion        % "container",
         "javax.servlet"       % "javax.servlet-api"     % "3.1.0",
         "com.typesafe"        % "config"                % "1.2.1",
-        "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4"
+        "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
+        "com.h2database"      % "h2"                    % "1.4.180"           % "test"
       )
 //      sourceGenerators in Compile <+= buildInfo,
 //      buildInfoPackage := "com.socrata.decima",

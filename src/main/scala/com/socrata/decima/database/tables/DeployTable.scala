@@ -17,8 +17,9 @@ trait DeployTable {
                        service: String,
                        environment: String,
                        version: String,
-                       git: Option[String],
+                       revision: Option[String],
                        deployedBy: String,
+                       deployMethod: String,
                        deployedAt: Timestamp)
 
   class Deploys(tag: Tag) extends Table[DeployRow](tag, "deploys") {
@@ -27,10 +28,12 @@ trait DeployTable {
     def service = column[String]("service")
     def environment = column[String]("environment")
     def version = column[String]("version")
-    def git = column[Option[String]]("git")
+    def revision = column[Option[String]]("revision")
     def deployedBy = column[String]("deployed_by")
+    def deployMethod = column[String]("deploy_method")
     def deployedAt = column[Timestamp]("deployed_at")
-    def * = (id, service, environment, version, git, deployedBy, deployedAt) <>(DeployRow.tupled, DeployRow.unapply)
+    def * = (id, service, environment, version, revision, deployedBy, deployMethod, deployedAt) <> (DeployRow.tupled,
+      DeployRow.unapply)
     // scalastyle:on
   }
 
@@ -39,17 +42,19 @@ trait DeployTable {
       row.service,
       row.environment,
       row.version,
-      row.git,
+      row.revision,
       row.deployedBy,
+      row.deployMethod,
       TimeUtils.toJodaTime(row.deployedAt))
   }
 
   val deployTable = TableQuery[Deploys]
 
-  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
+  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
 
   val currentDeploymentQuery = StaticQuery.queryNA[DeployRow]( """
-                                  select a.id, a.service, a.environment, b.version, b.git, b.deployed_by, b.deployed_at
+                                  select a.id, a.service, a.environment,
+                                    b.version, b.revision, b.deployed_by, b.deploy_method, b.deployed_at
                                   from (
                                     select distinct deploys.service, deploys.environment, max(deploys.id) as id
                                     from deploys
