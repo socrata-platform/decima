@@ -15,6 +15,8 @@ import org.json4s.jackson.Serialization.write
 class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAfter
                         with ShouldMatchers with H2DBSpecUtils {
 
+  import dao.driver.simple._ // scalastyle:ignore import.grouping
+
   implicit val formats = DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
   val deployAccess = new DeployAccessWithPostgres(db, dao)
   addServlet(new DeployService(deployAccess), "/deploy/*")
@@ -69,6 +71,10 @@ class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAf
       val body = write(parse(write(newDeploy)).underscoreKeys)
       put("/deploy", body) {
         status should be (200)
+        val deploy = parse(response.body).camelizeKeys.extract[Deploy]
+        db.withSession { implicit session: Session =>
+          dao.lookup(deploy.id) should be ('right)
+        }
       }
     }
 
