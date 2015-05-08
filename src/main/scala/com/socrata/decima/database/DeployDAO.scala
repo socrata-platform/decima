@@ -58,6 +58,6 @@ class DeployDAO extends DeployTable {
       case Some(s) => row.service == s
       case None => true
     })
-    res.map(d => rowToModelDeploy(d))
+    res.map(rowToModelDeploy)
   }
 }
