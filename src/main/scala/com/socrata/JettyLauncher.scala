@@ -1,6 +1,6 @@
 package com.socrata
 
-import com.socrata.decima.DecimaConfig
+import com.socrata.decima.util.DecimaConfig
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.webapp.WebAppContext

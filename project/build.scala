@@ -1,60 +1,55 @@
 import sbt._
 import Keys._
 import org.scalatra.sbt._
-import org.scalatra.sbt.PluginKeys._
 import com.mojolly.scalate.ScalatePlugin._
-import ScalateKeys._
+import sbtassembly.AssemblyKeys
+import AssemblyKeys._
 
 object DecimaBuild extends Build {
-  val Organization = "com.socrata"
-  val Name = "decima"
-  val ScalaVersion = "2.11.6"
-  val ScalatraVersion = "2.3.1"
-  val LiquibaseVersion = "3.3.2"
+  private val ScalatraVersion = "2.3.1"
+  private val JettyVersion = "9.1.5.v20140505"
 
   lazy val project = Project (
     "decima",
     file("."),
     settings = ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
-      organization := Organization,
-      name := Name,
-      scalaVersion := ScalaVersion,
+      organization := "com.socrata",
+      name := "decima",
+      scalaVersion := "2.11.6",
+      mainClass in (Compile, run) := Some("com.socrata.JettyLauncher"),
+      mainClass in assembly := Some("com.socrata.JettyLauncher"),
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       resolvers += "Socrata Cloudbees" at "https://repository-socrata-oss.forge.cloudbees.com/release",
       resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns),
       libraryDependencies ++= Seq(
-        "org.scalatra" %% "scalatra" % ScalatraVersion,
-        "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
-        "org.scalatra" %% "scalatra-json" % ScalatraVersion,
-        "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
-        "org.scalatra" %% "scalatra-scalatest" % ScalatraVersion % "test",
-        "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-        "org.json4s"   %% "json4s-jackson" % "3.3.0.RC1",
-        "com.typesafe.slick" %% "slick" % "2.1.0",
-        "org.slf4j" % "slf4j-api" % "1.7.10",
-        "c3p0" % "c3p0" % "0.9.1.2",
-        "ch.qos.logback" % "logback-classic" % "1.1.2" % "runtime",
-        "org.eclipse.jetty" % "jetty-webapp" % "9.1.5.v20140505" % "container;compile",
-        "org.eclipse.jetty" % "jetty-plus" % "9.1.5.v20140505" % "container",
-        "javax.servlet" % "javax.servlet-api" % "3.1.0",
-        "org.liquibase" % "liquibase-core" % LiquibaseVersion,
-        "org.liquibase" % "liquibase-maven-plugin" % LiquibaseVersion,
-        "com.typesafe" % "config" % "1.2.1",
-        "org.postgresql" % "postgresql" % "9.4-1201-jdbc4"
-      ),
-      scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
-        Seq(
-          TemplateConfig(
-            base / "webapp" / "WEB-INF" / "templates",
-            Seq.empty,  /* default imports should be added here */
-            Seq(
-              Binding("context", "_root_.org.scalatra.scalate.ScalatraRenderContext", importMembers = true, isImplicit = true)
-            ),  /* add extra bindings here */
-            Some("templates")
-          )
-        )
-      }
+        "org.scalatra"        %% "scalatra"             % ScalatraVersion,
+        "org.scalatra"        %% "scalatra-scalate"     % ScalatraVersion,
+        "org.scalatra"        %% "scalatra-json"        % ScalatraVersion,
+        "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
+        "org.scalatest"       %% "scalatest"            % "2.2.4"             % "test",
+        "org.json4s"          %% "json4s-jackson"       % "3.2.11",
+        "org.json4s"          %% "json4s-ext"           % "3.2.11",
+        "com.typesafe.slick"  %% "slick"                % "2.1.0",
+        "org.slf4j"           % "slf4j-api"             % "1.7.10",
+        "c3p0"                % "c3p0"                  % "0.9.1.2",
+        "ch.qos.logback"      % "logback-classic"       % "1.1.2"             % "runtime",
+        "org.eclipse.jetty"   % "jetty-webapp"          % JettyVersion        % "container;compile",
+        "org.eclipse.jetty"   % "jetty-plus"            % JettyVersion        % "container",
+        "javax.servlet"       % "javax.servlet-api"     % "3.1.0",
+        "com.typesafe"        % "config"                % "1.2.1",
+        "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
+        "com.h2database"      % "h2"                    % "1.4.180"           % "test"
+      )
+//      sourceGenerators in Compile <+= buildInfo,
+//      buildInfoPackage := "com.socrata.decima",
+//      buildInfoKeys := Seq[BuildInfoKey](
+//        name,
+//        version,
+//        scalaVersion,
+//        libraryDependencies in Compile,
+//        BuildInfoKey.action("buildTime") { System.currentTimeMillis }
+//      )
     )
   )
 }

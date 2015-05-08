@@ -32,22 +32,15 @@ Docker:
 PUT to /deploy endpoint with a body containing the relevant information
 ```sh
 curl -X PUT -H 'Content-Type: application/json' \
-    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "git": "optional", "deployed_by": "autoprod"}' \
+    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "revision": "optional", "deploy_method": "autoprod", "deployed_by": "an engineer"}' \
     http://localhost:8080/deploy
 ```
 
 ## Setup Database ##
 
-Decima expects the following table for persistence:
-```sql
-create table deploys (
-    id serial primary key,
-    service varchar(128),
-    environment varchar(128),
-    version varchar(128),
-    git varchar(128),
-    deployed_by varchar(128),
-    deployed_at timestamp default now());
+Decima expects a `deploys` table, to create this on your local machine execute the following:
+```bash
+$ java -cp target/scala-2.11/decima-assembly-0.1.2-SNAPSHOT.jar com.socrata.decima.Bootstrap
 ```
 
 ## Questions / TODOs ##
