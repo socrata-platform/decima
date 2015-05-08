@@ -45,7 +45,7 @@ trait DeployTable {
       row.revision,
       row.deployedBy,
       row.deployMethod,
-      TimeUtils.toJodaTime(row.deployedAt))
+      TimeUtils.toJodaDateTime(row.deployedAt))
   }
 
   val deployTable = TableQuery[Deploys]

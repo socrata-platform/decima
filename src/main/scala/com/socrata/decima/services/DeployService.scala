@@ -41,7 +41,9 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
   put("/") {
     val deploy = parsedBody.extract[DeployForCreate]
 
-    deployAccess.createDeploy(deploy)
+    val createdDeploy = deployAccess.createDeploy(deploy)
+    logger.info("Created deploy event: " + createdDeploy.toString)
+    createdDeploy
   }
 
   /**

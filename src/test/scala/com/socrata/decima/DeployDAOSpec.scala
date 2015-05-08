@@ -1,62 +1,26 @@
 package com.socrata.decima
 
-import com.socrata.decima.models.{DeployForCreate, Deploy}
-import org.slf4j.LoggerFactory
-
-import scala.slick.driver.H2Driver
-
-import com.socrata.decima.database.{DatabaseDriver, DeployDAO}
-import org.scalatest.{BeforeAndAfter, WordSpec, ShouldMatchers}
+import com.socrata.decima.models.DeployForCreate
+import org.scalatest.{BeforeAndAfter, ShouldMatchers, WordSpec}
 
 // scalastyle:off multiple.string.literals
 // scalastyle:off magic.number
 
-trait ActualH2Driver extends DatabaseDriver {
-  val driver = H2Driver
-}
+class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with H2DBSpecUtils {
 
-class DeployUtil(dao:DeployDAO with DatabaseDriver) {
-  import dao.driver.simple._ // scalastyle:ignore
-  def populateDeployDb(implicit session:Session): Unit = {
-    val deploys = Seq(DeployForCreate("core", "staging", "1.1.1", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("core", "rc", "1.1.1", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("core", "production", "1.1.1", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("core", "staging", "1.1.2", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("core", "rc", "1.1.2", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("core", "staging", "1.1.3", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("frontend", "staging", "1.1.1", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("frontend", "rc", "1.1.1", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("frontend", "staging", "1.1.2", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("frontend", "staging", "1.1.3", Option("blah"), "autoprod", "an engineer"),
-                      DeployForCreate("frontend", "staging", "1.1.2", Option("blah"), "autoprod", "an engineer"))
-    deploys.foreach(dao.createDeploy)
-  }
-}
-
-class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter {
-  val logger = LoggerFactory.getLogger(getClass)
-  val dao = new DeployDAO with ActualH2Driver
   import dao.driver.simple._ // scalastyle:ignore import.grouping
-  val db = Database.forURL("jdbc:h2:mem:deploy_dao_test;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1",
-                           driver = "org.h2.Driver")
-  val util = new DeployUtil(dao)
 
   before {
-    db.withSession { implicit session:Session =>
-      dao.deployTable.ddl.create
-      util.populateDeployDb
-    }
+    setUpDb()
   }
 
   after {
-    db.withSession { implicit session:Session =>
-      dao.deployTable.ddl.drop
-    }
+    cleanUpDb()
   }
 
   "The Deploy DAO" should {
     "create a deploy event" in {
-      db.withSession { implicit session:Session =>
+      db.withSession { implicit session: Session =>
         val deploy = dao.createDeploy(DeployForCreate("service",
                                                       "environment",
                                                       "1.1.1",
@@ -68,7 +32,7 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter {
     }
 
     "retrieve current deploy status" in {
-      db.withSession { implicit session:Session =>
+      db.withSession { implicit session: Session =>
         val currentDeploys = dao.currentDeployment(None, None)
         currentDeploys.length should be (5)
         currentDeploys.filter(d => d.service == "core" && d.environment == "staging").head.version should be ("1.1.3")
@@ -82,9 +46,12 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter {
     }
 
     "filter current deploy status by service" in {
-      db.withSession { implicit session:Session =>
+      db.withSession { implicit session: Session =>
         val currentDeploys = dao.currentDeployment(Option("staging"), None)
         assert(currentDeploys.length === 2)
+        currentDeploys.foreach {
+          _.environment should be ("staging")
+        }
       }
     }
 
@@ -92,8 +59,8 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter {
       db.withSession { implicit session: Session =>
         val currentDeploys = dao.currentDeployment(None, Option("core"))
         assert(currentDeploys.length === 3)
-        currentDeploys.foreach { deploy =>
-          deploy.service should be ("core")
+        currentDeploys.foreach {
+          _.service should be ("core")
         }
       }
     }
