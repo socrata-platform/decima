@@ -8,6 +8,7 @@ import AssemblyKeys._
 object DecimaBuild extends Build {
   private val ScalatraVersion = "2.3.1"
   private val JettyVersion = "9.1.5.v20140505"
+  private val Json4sVersion = "3.3.0.RC1"
 
   lazy val project = Project (
     "decima",
@@ -28,8 +29,8 @@ object DecimaBuild extends Build {
         "org.scalatra"        %% "scalatra-json"        % ScalatraVersion,
         "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
         "org.scalatest"       %% "scalatest"            % "2.2.4"             % "test",
-        "org.json4s"          %% "json4s-jackson"       % "3.2.11",
-        "org.json4s"          %% "json4s-ext"           % "3.2.11",
+        "org.json4s"          %% "json4s-jackson"       % Json4sVersion,
+        "org.json4s"          %% "json4s-ext"           % Json4sVersion,
         "com.typesafe.slick"  %% "slick"                % "2.1.0",
         "org.slf4j"           % "slf4j-api"             % "1.7.10",
         "c3p0"                % "c3p0"                  % "0.9.1.2",
