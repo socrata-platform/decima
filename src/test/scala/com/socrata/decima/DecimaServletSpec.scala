@@ -7,6 +7,7 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
 // scalastyle:off magic.number
+// scalastyle:off multiple.string.literals
 
 class DecimaServletSpec extends ScalatraSuite with FunSuiteLike {
 
