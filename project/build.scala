@@ -4,6 +4,8 @@ import org.scalatra.sbt._
 import com.mojolly.scalate.ScalatePlugin._
 import sbtassembly.AssemblyKeys
 import AssemblyKeys._
+import sbtbuildinfo.BuildInfoKeys._
+import sbtbuildinfo.{BuildInfoKey, BuildInfoOption, BuildInfoPlugin}
 
 object DecimaBuild extends Build {
   private val ScalatraVersion = "2.3.1"
@@ -41,16 +43,19 @@ object DecimaBuild extends Build {
         "com.typesafe"        % "config"                % "1.2.1",
         "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
         "com.h2database"      % "h2"                    % "1.4.180"           % "test"
-      )
-//      sourceGenerators in Compile <+= buildInfo,
-//      buildInfoPackage := "com.socrata.decima",
-//      buildInfoKeys := Seq[BuildInfoKey](
-//        name,
-//        version,
-//        scalaVersion,
-//        libraryDependencies in Compile,
-//        BuildInfoKey.action("buildTime") { System.currentTimeMillis }
-//      )
+      ),
+      buildInfoKeys := Seq[BuildInfoKey](
+        name,
+        version,
+        scalaVersion,
+        sbtVersion,
+        BuildInfoKey.action("buildTime") { System.currentTimeMillis() },
+        BuildInfoKey.action("revision") { gitSha }),
+      buildInfoPackage := "com.socrata.decima",
+      buildInfoOptions += BuildInfoOption.ToMap
     )
-  )
+  ).enablePlugins(BuildInfoPlugin)
+
+  lazy val gitSha = Process(Seq("git", "describe", "--always", "--dirty", "--long", "--abbrev=10")).!!.stripLineEnd
+
 }

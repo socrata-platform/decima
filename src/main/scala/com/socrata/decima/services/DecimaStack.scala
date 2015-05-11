@@ -18,6 +18,10 @@ trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraL
     contentType = formats("json")
   }
 
+  after() {
+    contentType = formats("json")
+  }
+
   error {
     case e: Exception =>
       logger.error("Request error: ", e)

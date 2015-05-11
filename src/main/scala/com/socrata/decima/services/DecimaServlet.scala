@@ -1,5 +1,8 @@
 package com.socrata.decima.services
 
+import com.socrata.decima.BuildInfo
+import org.json4s.JsonAST.{JObject, JString}
+
 /**
  * DecimaServlet serves the landing page for Decima
  */
@@ -25,12 +28,8 @@ class DecimaServlet extends DecimaStack {
     </html>
   }
 
-//  get("/version") {
-//    Map("version" -> BuildInfo.version,
-//      "scalaVersion" -> BuildInfo.scalaVersion,
-//      "dependencies" -> BuildInfo.libraryDependencies,
-//      "buildTime" -> new org.joda.time.DateTime(BuildInfo.buildTime).toString())
-//    )
-//  }
-
+  get("/version") {
+    logger.info("Version request: " + BuildInfo.version)
+    BuildInfo.toMap
+  }
 }

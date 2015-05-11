@@ -43,6 +43,10 @@ Decima expects a `deploys` table, to create this on your local machine execute t
 $ java -cp target/scala-2.11/decima-assembly-0.1.2-SNAPSHOT.jar com.socrata.decima.Bootstrap
 ```
 
+```sql
+
+```
+
 ## Questions / TODOs ##
 * Configuration:
     * c3p0
