@@ -19,6 +19,7 @@ object DecimaBuild extends Build {
       organization := "com.socrata",
       name := "decima",
       scalaVersion := "2.11.6",
+      crossScalaVersions := Seq("2.11.6"),
       mainClass in (Compile, run) := Some("com.socrata.JettyLauncher"),
       mainClass in assembly := Some("com.socrata.JettyLauncher"),
       resolvers += Classpaths.typesafeReleases,

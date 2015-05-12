@@ -9,12 +9,7 @@ import org.json4s.JsonAST.{JObject, JString}
 class DecimaServlet extends DecimaStack {
 
   get("/") {
-    before() {
-      contentType = formats("html") // scalastyle:ignore multiple.string.literals
-    }
-    after() {
-      contentType = formats("html")
-    }
+    contentType = formats("html")
     <html>
       <body>
         <h1>Hello, world!</h1>
