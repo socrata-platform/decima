@@ -3,7 +3,7 @@ import javax.servlet.ServletContext
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.socrata.decima.data_access.DeployAccessWithPostgres
 import com.socrata.decima.database.{ActualPostgresDriver, DeployDAO}
-import com.socrata.decima.services.{DecimaServlet, DeployService}
+import com.socrata.decima.services.{VersionService, DecimaServlet, DeployService}
 import com.socrata.decima.util.DecimaConfig
 import org.scalatra._
 import org.slf4j.LoggerFactory
@@ -35,6 +35,7 @@ class ScalatraBootstrap extends LifeCycle {
     val db = Database.forDataSource(cpds)
     val deployAccess = new DeployAccessWithPostgres(db, new DeployDAO() with ActualPostgresDriver)
     context.mount(new DeployService(deployAccess), "/deploy/*")
+    context.mount(new VersionService, "/version")
     context.mount(new DecimaServlet, "/*")
   }
 
