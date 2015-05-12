@@ -1,7 +1,5 @@
 package com.socrata.decima.services
 
-import com.socrata.decima.BuildInfo
-import org.json4s.JsonAST.{JObject, JString}
 import org.scalatra.ScalatraServlet
 
 /**
