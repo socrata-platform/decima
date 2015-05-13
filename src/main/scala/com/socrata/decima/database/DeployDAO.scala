@@ -16,14 +16,7 @@ class DeployDAO extends DeployTable {
   def createDeploy(deploy: DeployForCreate)(implicit session: Session): Either[Exception, Deploy] = {
     session.withTransaction {
       val now = TimeUtils.now
-      val newId = (deployTable returning deployTable.map(_.id)) += DeployRow(0,
-                                                                              deploy.service,
-                                                                              deploy.environment,
-                                                                              deploy.version,
-                                                                              deploy.revision,
-                                                                              deploy.deployedBy,
-                                                                              deploy.deployMethod,
-                                                                              TimeUtils.toSqlTimestamp(now))
+      val newId = (deployTable returning deployTable.map(_.id)) += modelToRowDeploy(deploy)
       val newDeploy = DeployCompiledQueries.lookup(newId).run.headOption
       newDeploy.map(d => Right(rowToModelDeploy(d))).getOrElse(Left(new RuntimeException("Unable to create deploy")))
     }
