@@ -24,7 +24,9 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
         val deploy = dao.createDeploy(DeployForCreate("service",
                                                       "environment",
                                                       "1.1.1",
+                                                      "f6b46bd0852a768f9c1b9f3cb0630032f4bfc93f",
                                                       Option("f6b46bd0852a768f9c1b9f3cb0630032f4bfc93f"),
+                                                      Option("{ \"this\": \"is a config\" }"),
                                                       "autoprod",
                                                       "an engineer"))
         deploy should be('right)

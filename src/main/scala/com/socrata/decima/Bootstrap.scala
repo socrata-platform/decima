@@ -27,6 +27,7 @@ object Bootstrap extends App {
   import a.driver.simple._ // scalastyle:ignore import.grouping
 
   db.withSession{ implicit session:Session =>
+    a.deployTable.ddl.createStatements.foreach(logger.info)
     a.deployTable.ddl.create
   }
 }

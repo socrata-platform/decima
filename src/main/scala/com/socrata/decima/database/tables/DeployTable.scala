@@ -3,7 +3,7 @@ package com.socrata.decima.database.tables
 import com.socrata.decima.database.DatabaseDriver
 import java.sql.Timestamp
 
-import com.socrata.decima.models.Deploy
+import com.socrata.decima.models.{DeployForCreate, Deploy}
 import com.socrata.decima.util.TimeUtils
 
 import scala.slick.jdbc.{GetResult, StaticQuery}
@@ -17,7 +17,9 @@ trait DeployTable {
                        service: String,
                        environment: String,
                        version: String,
-                       revision: Option[String],
+                       serviceSha: String,
+                       dockerSha: Option[String],
+                       configuration: Option[String],
                        deployedBy: String,
                        deployMethod: String,
                        deployedAt: Timestamp)
@@ -28,11 +30,13 @@ trait DeployTable {
     def service = column[String]("service")
     def environment = column[String]("environment")
     def version = column[String]("version")
-    def revision = column[Option[String]]("revision")
+    def serviceSha = column[String]("service_sha")
+    def dockerSha = column[Option[String]]("docker_sha")
+    def configuration = column[Option[String]]("configuration", O.DBType("text"))
     def deployedBy = column[String]("deployed_by")
     def deployMethod = column[String]("deploy_method")
     def deployedAt = column[Timestamp]("deployed_at")
-    def * = (id, service, environment, version, revision, deployedBy, deployMethod, deployedAt) <> (DeployRow.tupled,
+    def * = (id, service, environment, version, serviceSha, dockerSha, configuration, deployedBy, deployMethod, deployedAt) <> (DeployRow.tupled,
       DeployRow.unapply)
     // scalastyle:on
   }
@@ -42,19 +46,35 @@ trait DeployTable {
       row.service,
       row.environment,
       row.version,
-      row.revision,
+      row.serviceSha,
+      row.dockerSha,
+      row.configuration,
       row.deployedBy,
       row.deployMethod,
       TimeUtils.toJodaDateTime(row.deployedAt))
   }
 
+  def modelToRowDeploy(deploy: DeployForCreate): DeployRow = {
+    DeployRow(0,
+              deploy.service,
+              deploy.environment,
+              deploy.version,
+              deploy.serviceSha,
+              deploy.dockerSha,
+              deploy.configuration,
+              deploy.deployedBy,
+              deploy.deployMethod,
+              TimeUtils.toSqlTimestamp(TimeUtils.now))
+  }
+
   val deployTable = TableQuery[Deploys]
 
-  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
+  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
 
   val currentDeploymentQuery = StaticQuery.queryNA[DeployRow]( """
                                   select a.id, a.service, a.environment,
-                                    b.version, b.revision, b.deployed_by, b.deploy_method, b.deployed_at
+                                    b.version, b.service_sha, b.docker_sha, b.configuration, b.deployed_by,
+                                    b.deploy_method, b.deployed_at
                                   from (
                                     select distinct deploys.service, deploys.environment, max(deploys.id) as id
                                     from deploys
