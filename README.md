@@ -1,6 +1,8 @@
 # decima #
 A service to track deployments and service versions across environments.
 
+[![Build Status](https://travis-ci.org/socrata-platform/decima.svg?branch=master)](https://travis-ci.org/socrata-platform/decima)
+
 ## Build & Run ##
 
 Locally:
