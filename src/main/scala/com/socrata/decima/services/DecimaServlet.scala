@@ -1,11 +1,16 @@
 package com.socrata.decima.services
 
+import com.socrata.decima.BuildInfo
+import org.json4s.Formats
 import org.scalatra.ScalatraServlet
+import org.scalatra.json.JacksonJsonSupport
 
 /**
  * DecimaServlet serves the landing page for Decima
  */
-class DecimaServlet extends ScalatraServlet with ScalatraLogging {
+class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
+
+  override protected implicit def jsonFormats: Formats = org.json4s.DefaultFormats
 
   get("/") {
     <html>
@@ -19,5 +24,10 @@ class DecimaServlet extends ScalatraServlet with ScalatraLogging {
         </ul>
       </body>
     </html>
+  }
+
+  get("/version") {
+    contentType = formats("json")
+    BuildInfo.toMap
   }
 }
