@@ -20,6 +20,7 @@ trait H2DBSpecUtils {
     driver = "org.h2.Driver")
 
   def populateDeployDb(implicit session: Session): Unit = {
+    // scalastyle:off line.size.limit
     val deploys = Seq(DeployForCreate("core", "staging", "1.1.1", "blah", Option("blah"), Option("""{ "this": "is a config" }"""), "autoprod", "an engineer"),
       DeployForCreate("core", "rc", "1.1.1", "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
       DeployForCreate("core", "production", "1.1.1", "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
@@ -31,6 +32,7 @@ trait H2DBSpecUtils {
       DeployForCreate("frontend", "staging", "1.1.2", "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
       DeployForCreate("frontend", "staging", "1.1.3", "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
       DeployForCreate("frontend", "staging", "1.1.2", "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"))
+    // scalastyle:on line.size.limit
     deploys.foreach(dao.createDeploy)
   }
 

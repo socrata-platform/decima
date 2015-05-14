@@ -1,10 +1,8 @@
 package com.socrata.decima
 
-import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.socrata.decima.database.Migration
 import com.socrata.decima.database.Migration.{Migrate, Redo, Undo}
 import com.socrata.decima.util.{DataSourceFromConfig, DecimaConfig}
-import org.slf4j.LoggerFactory
 
 import scala.slick.jdbc.JdbcBackend._
 
@@ -29,5 +27,4 @@ object MigrateSchema extends App {
   }
 
   Migration.migrateDb(cpds.getConnection, operation)
-
 }

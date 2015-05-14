@@ -1,6 +1,6 @@
 package com.socrata.decima.util
 
-import com.typesafe.config.{ConfigFactory, Config}
+import com.typesafe.config.{Config, ConfigFactory}
 
 /**
  * The DecimaConfig object loads configuration settings from

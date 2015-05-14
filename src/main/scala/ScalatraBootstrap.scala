@@ -1,6 +1,5 @@
 import javax.servlet.ServletContext
 
-import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.socrata.decima.data_access.DeployAccessWithPostgres
 import com.socrata.decima.database.{ActualPostgresDriver, DeployDAO}
 import com.socrata.decima.services.{DecimaServlet, DeployService}

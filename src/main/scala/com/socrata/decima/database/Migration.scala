@@ -1,9 +1,10 @@
 package com.socrata.decima.database
 
 import java.sql.Connection
+
 import liquibase.Liquibase
-import liquibase.resource.ClassLoaderResourceAccessor
 import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
 
 object Migration {
   sealed abstract class MigrationOperation
