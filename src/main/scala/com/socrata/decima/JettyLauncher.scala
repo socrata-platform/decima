@@ -1,4 +1,4 @@
-package com.socrata
+package com.socrata.decima
 
 import com.socrata.decima.util.DecimaConfig
 import org.eclipse.jetty.server.Server

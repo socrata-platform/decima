@@ -1,9 +1,13 @@
 #!/bin/bash
 # Start Decima service
 BASEDIR=$(dirname $0)/..
-CONFIG=${DECIMA_CONFIG:-$BASEDIR/conf/default.conf}
-JARFILE=$BASEDIR/target/scala-2.11/lachesis-assembly-*.jar
+if [ -z "$DECIMA_CONFIG" ]; then
+  echo "Using default config, to set a config file use $DECIMA_CONFIG."
+else
+  JAVA_ARGS="-Dconfig.file=$DECIMA_CONFIG"
+fi
+JARFILE=$BASEDIR/target/scala-2.11/decima-assembly-*.jar
 if [ ! -e $JARFILE ]; then
   cd $BASEDIR && sbt assembly
 fi
-java -Dconfig.file=$CONFIG -jar $JARFILE &
+java ${JAVA_ARGS} -jar $JARFILE &

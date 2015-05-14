@@ -42,20 +42,7 @@ curl -X PUT -H 'Content-Type: application/json' \
 
 Decima expects a `deploys` table, to create this on your local machine execute the following:
 ```bash
-$ java -cp target/scala-2.11/decima-assembly-0.1.2-SNAPSHOT.jar com.socrata.decima.Bootstrap
-```
-
-```sql
-create table "deploys" ("id" BIGSERIAL NOT NULL PRIMARY KEY,
-                        "service" VARCHAR(254) NOT NULL,
-                        "environment" VARCHAR(254) NOT NULL,
-                        "version" VARCHAR(254) NOT NULL,
-                        "service_sha" VARCHAR(254) NOT NULL,
-                        "docker_sha" VARCHAR(254),
-                        "configuration" text,
-                        "deployed_by" VARCHAR(254) NOT NULL,
-                        "deploy_method" VARCHAR(254) NOT NULL,
-                        "deployed_at" TIMESTAMP NOT NULL)
+$ java -cp target/scala-2.11/decima-assembly-*.jar com.socrata.decima.MigrateSchema migrate
 ```
 
 ## Questions / TODOs ##
