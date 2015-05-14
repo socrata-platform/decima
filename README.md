@@ -34,22 +34,18 @@ Docker:
 PUT to /deploy endpoint with a body containing the relevant information
 ```sh
 curl -X PUT -H 'Content-Type: application/json' \
-    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "revision": "optional", "deploy_method": "autoprod", "deployed_by": "an engineer"}' \
+    -d '{"service": "core", "environment": "staging", "version": "1.2.4", "service_sha": "asdwerasdf", "deploy_method": "autoprod", "deployed_by": "an engineer"}' \
     http://localhost:8080/deploy
 ```
 
 ## Setup Database ##
 
-Decima expects a `deploys` table, to create this on your local machine execute the following:
+First, set up the Decima database. The default in reference.conf is a database named `decima` with user/password both equal to 'blist'.
+
+Decima uses a `deploys` table, to create this on your local machine execute the following (this will not set up the database, only the necessary tables):
+
 ```bash
 $ java -cp target/scala-2.11/decima-assembly-*.jar com.socrata.decima.MigrateSchema migrate
 ```
 
-## Questions / TODOs ##
-* Configuration:
-    * c3p0
-    * Docker
-    * Postgres vs. RDS
-* RDS
-* Docker deployment
-*
+Or, just run the migrations by executing `bin/run_migrations.sh` with optional arguments: `migrate (default), redo [n], undo [n]`.

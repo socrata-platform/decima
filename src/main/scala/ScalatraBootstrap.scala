@@ -4,7 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.socrata.decima.data_access.DeployAccessWithPostgres
 import com.socrata.decima.database.{ActualPostgresDriver, DeployDAO}
 import com.socrata.decima.services.{DecimaServlet, DeployService}
-import com.socrata.decima.util.DecimaConfig
+import com.socrata.decima.util.{DataSourceFromConfig, DecimaConfig}
 import org.scalatra._
 import org.slf4j.LoggerFactory
 
@@ -17,15 +17,7 @@ import scala.slick.jdbc.JdbcBackend._
 class ScalatraBootstrap extends LifeCycle {
 
   val logger = LoggerFactory.getLogger(getClass)
-
-  // Set up DB configuration
-  // TODO: This config stuff should be automatic
-  val cpds = new ComboPooledDataSource
-  cpds.setJdbcUrl(DecimaConfig.Db.jdbcUrl)
-  cpds.setUser(DecimaConfig.Db.user)
-  cpds.setPassword(DecimaConfig.Db.password)
-  logger.info("Created c3p0 connection pool")
-  logger.info("JDBC URL: " + cpds.getJdbcUrl)
+  val cpds = DataSourceFromConfig(DecimaConfig.db)
 
   /**
    * Initialize app and set routing configuration

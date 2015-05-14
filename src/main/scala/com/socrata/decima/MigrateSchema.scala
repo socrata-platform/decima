@@ -3,20 +3,13 @@ package com.socrata.decima
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.socrata.decima.database.Migration
 import com.socrata.decima.database.Migration.{Migrate, Redo, Undo}
-import com.socrata.decima.util.DecimaConfig
+import com.socrata.decima.util.{DataSourceFromConfig, DecimaConfig}
 import org.slf4j.LoggerFactory
 
 import scala.slick.jdbc.JdbcBackend._
 
 object MigrateSchema extends App {
-  val logger = LoggerFactory.getLogger(getClass)
-
-  val cpds = new ComboPooledDataSource
-  cpds.setJdbcUrl(DecimaConfig.Db.jdbcUrl)
-  cpds.setUser(DecimaConfig.Db.user)
-  cpds.setPassword(DecimaConfig.Db.password)
-  logger.info("Created c3p0 connection pool")
-  logger.info("JDBC URL: " + cpds.getJdbcUrl)
+  val cpds = DataSourceFromConfig(DecimaConfig.db)
   val db = Database.forDataSource(cpds)
 
   val numChanges = args.length match {

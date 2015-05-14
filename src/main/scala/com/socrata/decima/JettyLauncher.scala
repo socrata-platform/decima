@@ -13,7 +13,7 @@ import org.scalatra.servlet.ScalatraListener
 object JettyLauncher extends App {
   private val rootPath = "/"
 
-  val server = new Server(DecimaConfig.App.port)
+  val server = new Server(DecimaConfig.app.port)
   val context = new WebAppContext()
 
   context setContextPath rootPath
