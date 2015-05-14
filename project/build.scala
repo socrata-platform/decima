@@ -43,7 +43,8 @@ object DecimaBuild extends Build {
         "javax.servlet"       % "javax.servlet-api"     % "3.1.0",
         "com.typesafe"        % "config"                % "1.2.1",
         "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
-        "com.h2database"      % "h2"                    % "1.4.180"           % "test"
+        "com.h2database"      % "h2"                    % "1.4.180"           % "test",
+        "org.liquibase"       % "liquibase-core"        % "3.3.3"
       ),
       buildInfoKeys := Seq[BuildInfoKey](
         name,
