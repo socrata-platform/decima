@@ -1,10 +1,10 @@
 package com.socrata.decima.util
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
+import grizzled.slf4j.Logging
 import org.slf4j.LoggerFactory
 
-object DataSourceFromConfig {
-  val logger = LoggerFactory.getLogger(getClass)
+object DataSourceFromConfig extends Logging {
   def apply(dbConfig: DbConfig): ComboPooledDataSource = {
     val cpds = new ComboPooledDataSource
     cpds.setJdbcUrl(dbConfig.jdbcUrl)

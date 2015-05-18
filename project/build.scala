@@ -6,6 +6,7 @@ import sbtassembly.AssemblyKeys
 import AssemblyKeys._
 import sbtbuildinfo.BuildInfoKeys._
 import sbtbuildinfo.{BuildInfoKey, BuildInfoOption, BuildInfoPlugin}
+import scoverage.ScoverageSbtPlugin
 
 object DecimaBuild extends Build {
   private val ScalatraVersion = "2.3.1"
@@ -30,12 +31,11 @@ object DecimaBuild extends Build {
         "org.scalatra"        %% "scalatra"             % ScalatraVersion,
         "org.scalatra"        %% "scalatra-scalate"     % ScalatraVersion,
         "org.scalatra"        %% "scalatra-json"        % ScalatraVersion,
-        "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
-        "org.scalatest"       %% "scalatest"            % "2.2.4"             % "test",
         "org.json4s"          %% "json4s-jackson"       % Json4sVersion,
         "org.json4s"          %% "json4s-ext"           % Json4sVersion,
         "com.typesafe.slick"  %% "slick"                % "2.1.0",
         "org.slf4j"           % "slf4j-api"             % "1.7.10",
+        "org.clapper"         %% "grizzled-slf4j"       % "1.0.2",
         "c3p0"                % "c3p0"                  % "0.9.1.2",
         "ch.qos.logback"      % "logback-classic"       % "1.1.2"             % "runtime",
         "org.eclipse.jetty"   % "jetty-webapp"          % JettyVersion        % "container;compile",
@@ -43,8 +43,10 @@ object DecimaBuild extends Build {
         "javax.servlet"       % "javax.servlet-api"     % "3.1.0",
         "com.typesafe"        % "config"                % "1.2.1",
         "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
-        "com.h2database"      % "h2"                    % "1.4.180"           % "test",
-        "org.liquibase"       % "liquibase-core"        % "3.3.3"
+        "org.liquibase"       % "liquibase-core"        % "3.3.3",
+        "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
+        "org.scalatest"       %% "scalatest"            % "2.2.4"             % "test",
+        "com.h2database"      % "h2"                    % "1.4.180"           % "test"
       ),
       buildInfoKeys := Seq[BuildInfoKey](
         name,
@@ -54,7 +56,8 @@ object DecimaBuild extends Build {
         BuildInfoKey.action("buildTime") { System.currentTimeMillis() },
         BuildInfoKey.action("revision") { gitSha }),
       buildInfoPackage := "com.socrata.decima",
-      buildInfoOptions += BuildInfoOption.ToMap
+      buildInfoOptions += BuildInfoOption.ToMap,
+      ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := ".*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;"
     )
   ).enablePlugins(BuildInfoPlugin)
 

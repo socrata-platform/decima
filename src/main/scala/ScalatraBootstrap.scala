@@ -4,6 +4,7 @@ import com.socrata.decima.data_access.DeployAccessWithPostgres
 import com.socrata.decima.database.{ActualPostgresDriver, DeployDAO}
 import com.socrata.decima.services.{DecimaServlet, DeployService}
 import com.socrata.decima.util.{DataSourceFromConfig, DecimaConfig}
+import grizzled.slf4j.Logging
 import org.scalatra._
 import org.slf4j.LoggerFactory
 
@@ -13,9 +14,8 @@ import scala.slick.jdbc.JdbcBackend._
 /**
  * ScalatraBootstrap class for global app settings and lifecycle management
  */
-class ScalatraBootstrap extends LifeCycle {
+class ScalatraBootstrap extends LifeCycle with Logging {
 
-  val logger = LoggerFactory.getLogger(getClass)
   val cpds = DataSourceFromConfig(DecimaConfig.db)
 
   /**

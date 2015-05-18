@@ -3,15 +3,15 @@ package com.socrata.decima.database
 import com.socrata.decima.database.tables.DeployTable
 import com.socrata.decima.models._
 import com.socrata.decima.util.TimeUtils
+import grizzled.slf4j.Logging
 import org.slf4j.LoggerFactory
 
-class DeployDAO extends DeployTable {
+class DeployDAO extends DeployTable with Logging {
   self: DatabaseDriver =>
 
   import driver.simple._ // scalastyle:ignore import.grouping
 
   val defaultHistoryLimit = 100
-  val logger = LoggerFactory.getLogger(getClass)
 
   def createDeploy(deploy: DeployForCreate)(implicit session: Session): Either[Exception, Deploy] = {
     session.withTransaction {
