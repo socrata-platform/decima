@@ -1,0 +1,10 @@
+create table if not exists "deploys" ("id" BIGSERIAL NOT NULL PRIMARY KEY,
+                                        "service" VARCHAR(254) NOT NULL,
+                                        "environment" VARCHAR(254) NOT NULL,
+                                        "version" VARCHAR(254) NOT NULL,
+                                        "service_sha" VARCHAR(254) NOT NULL,
+                                        "docker_sha" VARCHAR(254),
+                                        "configuration" TEXT,
+                                        "deployed_by" VARCHAR(254) NOT NULL,
+                                        "deploy_method" VARCHAR(254) NOT NULL,
+                                        "deployed_at" TIMESTAMP NOT NULL);

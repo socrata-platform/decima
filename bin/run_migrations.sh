@@ -1,19 +1,24 @@
 #!/bin/bash
 
-# Run lachesis migrations.
+# Run decima migrations.
 # See README file for options - but command can be migrate / undo / redo
+
 BASEDIR=$(dirname $0)/..
-if [ -z "$LACHESIS_CONFIG" ]; then
-    CONFIG="$BASEDIR/conf/default.conf"
-    echo "Using default configuration at: $CONFIG"
+
+if [ -z "$DECIMA_CONFIG" ]; then
+    echo "Using default configuration, to set a config file use $DECIMA_CONFIG."
 else
-    echo "Using configuration file specified in LACHESIS_CONFIG environment variable"
-    CONFIG=$LACHESIS_CONFIG
+    echo "Using configuration file specified in DECIMA_CONFIG environment variable"
+    JAVA_ARGS="-Dconfig.file=$DECIMA_CONFIG"
 fi
-JARFILE=$BASEDIR/soda-fountain-jetty/target/scala-2.1l/lachesis-assembly-*.jar
+
+JARFILE=$BASEDIR/target/scala-2.11/decima-assembly-*.jar
+
 if [ ! -e $JARFILE ]; then
-  cd $BASEDIR && sbt assembly
+  cd ${BASEDIR} && sbt assembly
 fi
+
 COMMAND=${1:-migrate}
+
 echo Running MigrateSchema $COMMAND $2...
-java -Dconfig.file=$CONFIG -cp $JARFILE com.socrata.decima.lachesis.db.MigrateSchema $COMMAND $2
+java ${JAVA_ARGS} -cp ${JARFILE} com.socrata.decima.MigrateSchema ${COMMAND} $2

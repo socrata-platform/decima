@@ -1,6 +1,6 @@
 package com.socrata.decima.util
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 /**
  * The DecimaConfig object loads configuration settings from
@@ -8,19 +8,20 @@ import com.typesafe.config.ConfigFactory
  * a configuration file specified in -Dconfig.file JAVA arg
  */
 object DecimaConfig {
-
   private val config = ConfigFactory.load
-  private val appConfig = config.getConfig("decima")
-  private val dbConfig = config.getConfig("c3p0")
 
-  object App {
-    val port = appConfig.getInt("port")
-  }
+  val app = new AppConfig(config, "decima")
+  val db = new DbConfig(config, "c3p0")
+}
 
-  object Db {
-    val jdbcUrl = dbConfig.getString("jdbcUrl")
-    val user = dbConfig.getString("user")
-    val password = dbConfig.getString("password")
-  }
+class AppConfig(baseConfig: Config, root: String) {
+  private val config = baseConfig.getConfig(root)
+  val port = config.getInt("port")
+}
 
+class DbConfig(baseConfig: Config, root: String) {
+  private val config = baseConfig.getConfig(root)
+  val jdbcUrl = config.getString("jdbcUrl")
+  val user = config.getString("user")
+  val password = config.getString("password")
 }

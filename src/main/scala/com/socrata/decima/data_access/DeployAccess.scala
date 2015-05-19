@@ -2,7 +2,8 @@ package com.socrata.decima.data_access
 
 import com.socrata.decima.database.{DatabaseDriver, DeployDAO}
 import com.socrata.decima.models._
-import slick.driver.PostgresDriver.simple.Database
+
+import scala.slick.driver.PostgresDriver.simple.Database
 
 
 trait DeployAccess {

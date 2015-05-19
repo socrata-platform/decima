@@ -1,9 +1,9 @@
 package com.socrata.decima.database.tables
 
-import com.socrata.decima.database.DatabaseDriver
 import java.sql.Timestamp
 
-import com.socrata.decima.models.{DeployForCreate, Deploy}
+import com.socrata.decima.database.DatabaseDriver
+import com.socrata.decima.models.{Deploy, DeployForCreate}
 import com.socrata.decima.util.TimeUtils
 
 import scala.slick.jdbc.{GetResult, StaticQuery}
