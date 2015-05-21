@@ -19,3 +19,6 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 .idea/
+
+# Don't commit config files :O
+decima.conf
