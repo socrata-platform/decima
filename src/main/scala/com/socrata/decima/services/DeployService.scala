@@ -25,10 +25,10 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
    * environment: environment to return deploy information for
    */
   get("/") { // scalastyle:ignore multiple.string.literals
-    val serviceName = params.get(serviceParamKey)
-    val environmentName = params.get(environmentParamKey)
+    val services = params.get(serviceParamKey).map(_.split(","))
+    val environments = params.get(environmentParamKey).map(_.split(","))
 
-    deployAccess.currentDeploymentState(environmentName, serviceName)
+    deployAccess.currentDeploymentState(environments, services)
   }
 
   /**
@@ -54,10 +54,10 @@ class DeployService(deployAccess:DeployAccess) extends DecimaStack {
    * limit: override the default number of deploy events to return
    */
   get("/history") {
-    val serviceName = params.get(serviceParamKey)
-    val environmentName = params.get(environmentParamKey)
+    val services = params.get(serviceParamKey).map(_.split(","))
+    val environments = params.get(environmentParamKey).map(_.split(","))
     val limit = params.getOrElse(limitParamKey, defaultLimit.toString).toInt
 
-    deployAccess.deploymentHistory(environmentName, serviceName, limit)
+    deployAccess.deploymentHistory(environments, services, limit)
   }
 }
