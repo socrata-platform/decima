@@ -42,7 +42,9 @@ class DeployDAO extends DeployTable with Logging {
     res.map(rowToModelDeploy)
   }
 
-  def currentDeployment(environments: Option[Array[String]], services: Option[Array[String]])(implicit session:Session): Seq[Deploy] = {
+  def currentDeployment(environments: Option[Array[String]],
+                        services: Option[Array[String]])
+                       (implicit session:Session): Seq[Deploy] = {
     val res = currentDeploymentQuery.list.filter(row => environments match {
       case Some(e) => e.contains(row.environment)
       case None => true

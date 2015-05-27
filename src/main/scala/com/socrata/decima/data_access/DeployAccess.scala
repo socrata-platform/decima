@@ -18,14 +18,16 @@ case class DeployAccessWithPostgres(db: Database, dao: DeployDAO with DatabaseDr
       dao.createDeploy(deploy)
     }
 
-  override def currentDeploymentState(environments: Option[Array[String]], services: Option[Array[String]]): Seq[Deploy] =
+  override def currentDeploymentState(environments: Option[Array[String]],
+                                      services: Option[Array[String]]): Seq[Deploy] =
     db.withSession { implicit session =>
       dao.currentDeployment(environments, services)
     }
 
-  override def deploymentHistory(environments: Option[Array[String]], services: Option[Array[String]], limit: Int): Seq[Deploy] =
+  override def deploymentHistory(environments: Option[Array[String]],
+                                 services: Option[Array[String]],
+                                 limit: Int): Seq[Deploy] =
     db.withSession { implicit session =>
-      //dao.deploymentHistory(environment, service, limit)
       dao.deploymentHistory(environments, services, limit)
     }
 }
