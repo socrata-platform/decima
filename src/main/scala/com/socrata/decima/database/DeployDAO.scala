@@ -28,29 +28,30 @@ class DeployDAO extends DeployTable with Logging {
                                                                                     + id)))
   }
 
-  def deploymentHistory(environment: Option[String],
-                        service: Option[String],
+  def deploymentHistory(environments: Option[Array[String]],
+                        services: Option[Array[String]],
                         limit: Int = defaultHistoryLimit)(implicit session: Session): Seq[Deploy] = {
-    val res = deployTable.filter(row =>
-      environment match {
-        case Some(e) => row.environment === e
-        case None => LiteralColumn(true)
-      }).filter(row =>
-      service match {
-        case Some(s) => row.service === s
-        case None => LiteralColumn(true)
-      }).sortBy(_.deployedAt.desc).take(limit).run
+    val query = deployTable.filter(row => environments match {
+      case Some(e) => row.environment inSet e
+      case None => LiteralColumn(true)
+    }).filter(row => services match {
+      case Some(s) => row.service inSet s
+      case None => LiteralColumn(true)
+    }).sortBy(_.deployedAt.desc).take(limit)
+    val res = query.run
     res.map(rowToModelDeploy)
   }
 
-  def currentDeployment(environment: Option[String], service: Option[String])(implicit session:Session): Seq[Deploy] = {
-    val res = currentDeploymentQuery.list.filter(row => environment match {
-      case Some(e) => row.environment == e
+  def currentDeployment(environments: Option[Array[String]],
+                        services: Option[Array[String]])
+                       (implicit session:Session): Seq[Deploy] = {
+    val res = currentDeploymentQuery.list.filter(row => environments match {
+      case Some(e) => e.contains(row.environment)
       case None => true
-    }).filter(row => service match {
-      case Some(s) => row.service == s
+    }).filter(row => services match {
+      case Some(s) => s.contains(row.service)
       case None => true
-    })
+    }).sortBy(row => (row.environment, row.service))
     res.map(rowToModelDeploy)
   }
 }

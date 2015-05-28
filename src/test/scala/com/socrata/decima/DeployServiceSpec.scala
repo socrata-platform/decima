@@ -41,7 +41,7 @@ class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAf
     "return the correct number of deployed services" in {
       get("/deploy") {
         val deploys = parseResponse(response.body)
-        deploys.length should be (5)
+        deploys.length should be (6)
       }
     }
 
@@ -115,7 +115,7 @@ class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAf
     "return the history of recent deploys" in {
       get("/deploy/history") {
         val deploys = parseResponse(response.body)
-        deploys.length should be (11)
+        deploys.length should be (12)
       }
     }
   }

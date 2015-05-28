@@ -36,7 +36,7 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
     "retrieve current deploy status" in {
       db.withSession { implicit session: Session =>
         val currentDeploys = dao.currentDeployment(None, None)
-        currentDeploys.length should be (5)
+        currentDeploys.length should be (6)
         currentDeploys.filter(d => d.service == "core" && d.environment == "staging").head.version should be ("1.1.3")
         currentDeploys.filter(d => d.service == "core" && d.environment == "rc").head.version should be ("1.1.2")
         currentDeploys.filter(d => d.service == "core"
@@ -47,19 +47,19 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
       }
     }
 
-    "filter current deploy status by service" in {
+    "filter current deploy status by environment" in {
       db.withSession { implicit session: Session =>
-        val currentDeploys = dao.currentDeployment(Option("staging"), None)
-        assert(currentDeploys.length === 2)
+        val currentDeploys = dao.currentDeployment(Option(Array("staging")), None)
+        assert(currentDeploys.length === 3)
         currentDeploys.foreach {
           _.environment should be ("staging")
         }
       }
     }
 
-    "filter current deploy status by environment" in {
+    "filter current deploy status by service" in {
       db.withSession { implicit session: Session =>
-        val currentDeploys = dao.currentDeployment(None, Option("core"))
+        val currentDeploys = dao.currentDeployment(None, Option(Array("core")))
         assert(currentDeploys.length === 3)
         currentDeploys.foreach {
           _.service should be ("core")
@@ -67,19 +67,26 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
       }
     }
 
+    "filter current deploy status by multiple parameters" in {
+      db.withSession { implicit session: Session =>
+        val currentDeploys = dao.currentDeployment(Option(Array("rc", "staging")), Option(Array("phidippides", "core")))
+        assert(currentDeploys.length === 3)
+      }
+    }
+
     "retrieve deploy history" in {
       db.withSession { implicit session: Session =>
         val deployHistory = dao.deploymentHistory(None, None)
-        assert(deployHistory.length === 11)
+        assert(deployHistory.length === 12)
         val deploy = deployHistory.head
-        deploy.service should be ("frontend")
-        deploy.version should be ("1.1.2")
+        deploy.service should be ("phidippides")
+        deploy.version should be ("0.13")
       }
     }
 
     "filter deploy history by service" in {
       db.withSession { implicit session: Session =>
-        val deployHistory = dao.deploymentHistory(None, Option("core"))
+        val deployHistory = dao.deploymentHistory(None, Option(Array("core")))
         assert(deployHistory.length === 6)
         deployHistory.foreach {
           _.service should be ("core")
@@ -92,7 +99,7 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
 
     "filter deploy history by environment" in {
       db.withSession { implicit session: Session =>
-        val deployHistory = dao.deploymentHistory(Option("rc"), None)
+        val deployHistory = dao.deploymentHistory(Option(Array("rc")), None)
         assert(deployHistory.length === 3)
         deployHistory.foreach {
           _.environment should be ("rc")
@@ -109,8 +116,25 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
         assert(deployHistory.length === 2)
         val deploy = deployHistory.last
         deploy.service should be ("frontend")
-        deploy.version should be ("1.1.3")
+        deploy.version should be ("1.1.2")
       }
     }
+
+    "filter history by multiple environment parameters" in {
+      db.withSession { implicit session: Session =>
+        val deployHistory = dao.deploymentHistory(Option(Array("staging", "rc")), None)
+        assert(deployHistory.length === 11)
+        deployHistory.count(_.environment == "production") should be (0)
+      }
+    }
+
+    "filter history by multiple service parameters" in {
+      db.withSession { implicit session: Session =>
+        val deployHistory = dao.deploymentHistory(None, Option(Array("frontend", "phidippides")))
+        assert(deployHistory.length === 6)
+        deployHistory.count(_.environment == "production") should be (0)
+      }
+    }
+
   }
 }
