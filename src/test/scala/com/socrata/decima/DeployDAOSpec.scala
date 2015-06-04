@@ -24,12 +24,29 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
         val deploy = dao.createDeploy(DeployForCreate("service",
                                                       "environment",
                                                       "1.1.1",
+                                                      None,
                                                       "f6b46bd0852a768f9c1b9f3cb0630032f4bfc93f",
                                                       Option("f6b46bd0852a768f9c1b9f3cb0630032f4bfc93f"),
                                                       Option("{ \"this\": \"is a config\" }"),
                                                       "autoprod",
                                                       "an engineer"))
         deploy should be('right)
+      }
+    }
+
+    "create a deploy event for a docker deploy" in {
+      db.withSession { implicit session: Session =>
+        val deploy = dao.createDeploy(DeployForCreate("dockerservice",
+                                                      "staging",
+                                                      "1.2.3",
+                                                      Option("1.2.3_123_f6b46bd0"),
+                                                      "f6b46bd0",
+                                                      None,
+                                                      Option("blah blah blah"),
+                                                      "apps-marathon:deploy",
+                                                      "jenkins"))
+        deploy should be('right)
+        deploy.right.get.dockerTag should be(Option("1.2.3_123_f6b46bd0"))
       }
     }
 
