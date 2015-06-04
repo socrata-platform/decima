@@ -65,6 +65,7 @@ class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAf
       val newDeploy = DeployForCreate("phidippides",
                                       "rc",
                                       "1.1.10",
+                                      None,
                                       "aalsdfkjasldkfjaslkdfhkasdjhfkdgdfdfgdf",
                                       Option("asdfoqiweurqweorasdflkajsdowqieurodisjf"),
                                       Option("{\"this\": \"is a config\"}"),
@@ -84,6 +85,7 @@ class DeployServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAf
       val newDeploy = DeployForCreate("phidippides",
         "rc",
         "1.1.10",
+        None,
         "aalsdfkjasldkfjaslkdfhkasdjhfkdgdfdfgdf",
         Option("asdfoqiweurqweorasdflkajsdowqieurodisjf"),
         Option("{\"id\":\"/infrastructure/decima\",\"container\":{\"docker\":{\"network\":\"BRIDGE\",\"portMappings\":[{\"containerPort\":7474,\"hostPort\":7474,\"protocol\":\"tcp\"}],\"image\":\"registry.docker.aws-us-west-2-infrastructure.socrata.net:5000/internal/decima:0.1.3_a89227c3_640\"},\"type\":\"DOCKER\",\"volumes\":[]},\"env\":{\"CLORTHO_BUCKET\":\"infrastructure-credentials-bucket-credsbucket-xu43gg2w2hck\",\"PG_DB_HOST\":\"decima-infrastructure.cq9ts6dqjgr3.us-west-2.rds.amazonaws.com\",\"http_proxy\":\"http://proxy.aws-us-west-2-infrastructure.socrata.net:3128\",\"https_proxy\":\"http://proxy.aws-us-west-2-infrastructure.socrata.net:3128\",\"no_proxy\":\"localhost,127.0.0.1,localaddress,.localdomain.com,169.254.169.254,jenkins\",\"CLORTHO_PATH\":\"decima-db-pw.conf\",\"PG_DB_PASSWORD_LINE\":\"include \\\"/dev/shm/decima-db-pw.conf\\\"\"},\"constraints\":[[\"hostname\",\"UNIQUE\"],[\"az\",\"GROUP_BY\"],[\"dmz\",\"LIKE\",\"false\"]],\"args\":[],\"cpus\":0.2,\"mem\":512,\"command\":\"\",\"instances\":2,\"upgradeStrategy\":{\"minimumHealthCapacity\":0.5},\"healthChecks\":[{\"path\":\"/version\",\"protocol\":\"HTTP\",\"timeoutSeconds\":20,\"maxConsecutiveFailures\":0}]}"), // scalastyle:ignore line.size.limit

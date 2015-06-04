@@ -6,7 +6,7 @@
 BASEDIR=$(dirname $0)/..
 
 if [ -z "$DECIMA_CONFIG" ]; then
-    echo "Using default configuration, to set a config file use $DECIMA_CONFIG."
+    echo "Using default configuration, to set a config file use DECIMA_CONFIG."
 else
     echo "Using configuration file specified in DECIMA_CONFIG environment variable"
     JAVA_ARGS="-Dconfig.file=$DECIMA_CONFIG"

@@ -12,5 +12,10 @@
             <dropTable tableName="deploys"/>
         </rollback>
     </changeSet>
+    <changeSet author="Michael Brown" id="20150604-add-docker-tag">
+        <addColumn tableName="deploys">
+            <column name="docker_tag" type="varchar(254)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
