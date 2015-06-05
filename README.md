@@ -7,7 +7,7 @@ A service to track deployments and service versions across environments.
 
 Locally:
 ```sh
-$ ./sbt
+$ sbt
 > container:start
 > browse
 ```
