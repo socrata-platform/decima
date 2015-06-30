@@ -17,5 +17,11 @@
             <column name="docker_tag" type="varchar(254)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="Michael Brown" id="20150629-add-verification-table">
+        <sqlFile path="com/socrata/decima/migration/20150629-add-verification-table.sql" splitStatements="false" />
+        <rollback>
+            <dropTable tableName="verifications"/>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

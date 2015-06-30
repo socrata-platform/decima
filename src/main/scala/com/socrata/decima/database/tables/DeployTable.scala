@@ -3,8 +3,6 @@ package com.socrata.decima.database.tables
 import java.sql.Timestamp
 
 import com.socrata.decima.database.DatabaseDriver
-import com.socrata.decima.models.{Deploy, DeployForCreate}
-import com.socrata.decima.util.TimeUtils
 
 import scala.slick.jdbc.{GetResult, StaticQuery}
 
@@ -38,46 +36,18 @@ trait DeployTable {
     def deployedBy = column[String]("deployed_by")
     def deployMethod = column[String]("deploy_method")
     def deployedAt = column[Timestamp]("deployed_at")
-    def * = (id,
-      service,
-      environment,
-      version,
-      dockerTag,
-      serviceSha,
-      dockerSha,
-      configuration,
-      deployedBy,
-      deployMethod,
-      deployedAt) <> (DeployRow.tupled, DeployRow.unapply)
+    def * = ( id,
+              service,
+              environment,
+              version,
+              dockerTag,
+              serviceSha,
+              dockerSha,
+              configuration,
+              deployedBy,
+              deployMethod,
+              deployedAt) <> (DeployRow.tupled, DeployRow.unapply)
     // scalastyle:on
-  }
-
-  def rowToModelDeploy(row: DeployRow): Deploy = {
-    Deploy(row.id,
-      row.service,
-      row.environment,
-      row.version,
-      row.dockerTag,
-      row.serviceSha,
-      row.dockerSha,
-      row.configuration,
-      row.deployedBy,
-      row.deployMethod,
-      TimeUtils.toJodaDateTime(row.deployedAt))
-  }
-
-  def modelToRowDeploy(deploy: DeployForCreate): DeployRow = {
-    DeployRow(0,
-              deploy.service,
-              deploy.environment,
-              deploy.version,
-              deploy.dockerTag,
-              deploy.serviceSha,
-              deploy.dockerSha,
-              deploy.configuration,
-              deploy.deployedBy,
-              deploy.deployMethod,
-              TimeUtils.toSqlTimestamp(TimeUtils.now))
   }
 
   val deployTable = TableQuery[Deploys]

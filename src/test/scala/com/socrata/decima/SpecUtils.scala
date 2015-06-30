@@ -1,6 +1,6 @@
 package com.socrata.decima
 
-import com.socrata.decima.database.{DeployDAO, DatabaseDriver}
+import com.socrata.decima.database.{DeploymentDAO, DatabaseDriver}
 import com.socrata.decima.models.DeployForCreate
 
 import scala.slick.driver.H2Driver
@@ -14,7 +14,7 @@ trait ActualH2Driver extends DatabaseDriver {
 
 trait H2DBSpecUtils {
 
-  val dao = new DeployDAO with ActualH2Driver
+  val dao = new DeploymentDAO with ActualH2Driver
   import dao.driver.simple._ // scalastyle:ignore import.grouping
   val db = Database.forURL("jdbc:h2:mem:deploy_dao_test;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1",
     driver = "org.h2.Driver")
@@ -40,12 +40,14 @@ trait H2DBSpecUtils {
   def setUpDb(): Unit = {
     db.withSession { implicit session: Session =>
       dao.deployTable.ddl.create
+      dao.verificationTable.ddl.create
       populateDeployDb
     }
   }
 
   def cleanUpDb(): Unit = {
     db.withSession { implicit session: Session =>
+      dao.verificationTable.ddl.drop
       dao.deployTable.ddl.drop
     }
   }

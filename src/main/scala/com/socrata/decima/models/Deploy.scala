@@ -12,7 +12,8 @@ case class Deploy(id: Long,
                    configuration: Option[String],
                    deployedBy: String,
                    deployMethod: String,
-                   deployedAt: DateTime)
+                   deployedAt: DateTime,
+                   verified: String)
 
 case class DeployForCreate(service: String,
                             environment: String,

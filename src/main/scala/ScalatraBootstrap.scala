@@ -1,12 +1,11 @@
 import javax.servlet.ServletContext
 
-import com.socrata.decima.data_access.DeployAccessWithPostgres
-import com.socrata.decima.database.{ActualPostgresDriver, DeployDAO}
-import com.socrata.decima.services.{DecimaServlet, DeployService}
-import com.socrata.decima.util.{DataSourceFromConfig, DecimaConfig}
+import com.socrata.decima.data_access._
+import com.socrata.decima.database._
+import com.socrata.decima.services._
+import com.socrata.decima.util._
 import grizzled.slf4j.Logging
 import org.scalatra._
-import org.slf4j.LoggerFactory
 
 import scala.slick.jdbc.JdbcBackend._
 
@@ -24,8 +23,8 @@ class ScalatraBootstrap extends LifeCycle with Logging {
    */
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds)
-    val deployAccess = new DeployAccessWithPostgres(db, new DeployDAO() with ActualPostgresDriver)
-    context.mount(new DeployService(deployAccess), "/deploy/*")
+    val deployAccess = new DeploymentAccessWithPostgres(db, new DeploymentDAO() with ActualPostgresDriver)
+    context.mount(new DeploymentService(deployAccess), "/deploy/*")
     context.mount(new DecimaServlet, "/*")
   }
 
