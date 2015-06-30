@@ -21,7 +21,7 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
   val deployAccess = new DeploymentAccessWithPostgres(db, dao)
   addServlet(new DeploymentService(deployAccess), "/deploy/*")
 
-  def parseResponse(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
+  def parseDeployList(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
 
   before {
     setUpDb
@@ -40,21 +40,21 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
 
     "return the correct number of deployed services" in {
       get("/deploy") {
-        val deploys = parseResponse(response.body)
+        val deploys = parseDeployList(response.body)
         deploys.length should be (6)
       }
     }
 
     "allow filtering based on environment" in {
       get("/deploy?environment=production") {
-        val deploys = parseResponse(response.body)
+        val deploys = parseDeployList(response.body)
         deploys.length should be (1)
       }
     }
 
     "allow filtering based on service" in {
       get("/deploy?service=frontend") {
-        val deploys = parseResponse(response.body)
+        val deploys = parseDeployList(response.body)
         deploys.length should be (2)
       }
     }
@@ -116,8 +116,17 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
   "The Deploy Service /deploy/history" should {
     "return the history of recent deploys" in {
       get("/deploy/history") {
-        val deploys = parseResponse(response.body)
+        val deploys = parseDeployList(response.body)
         deploys.length should be (12)
+      }
+    }
+  }
+
+  "The Deploy Service /deploy/ID" should {
+    "allow retrieving a single deploy" in {
+      get("/deploy/1") {
+        val deploy = parse(body).camelizeKeys.extract[Deploy]
+        deploy.id should be(1)
       }
     }
   }

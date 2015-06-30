@@ -5,7 +5,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
     <changeSet author="Michael Brown" id="20150515-initial-db-bootstrap">
         <sqlFile path="com/socrata/decima/migration/20150515-initial-db-bootstrap.sql" splitStatements="false"/>
         <rollback>
@@ -18,10 +17,25 @@
         </addColumn>
     </changeSet>
     <changeSet author="Michael Brown" id="20150629-add-verification-table">
-        <sqlFile path="com/socrata/decima/migration/20150629-add-verification-table.sql" splitStatements="false" />
-        <rollback>
-            <dropTable tableName="verifications"/>
-        </rollback>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="verifications"/>
+            </not>
+        </preConditions>
+        <createTable tableName="verifications">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="status" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="details" type="TEXT"/>
+            <column name="time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deploy_id" type="BIGINT">
+                <constraints references="deploys(id)" foreignKeyName="verifications_deploy_id_fkey"/>
+            </column>
+        </createTable>
     </changeSet>
-
 </databaseChangeLog>

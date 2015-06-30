@@ -34,7 +34,8 @@ case class DeploymentAccessWithPostgres(db: Database, dao: DeploymentDAO with Da
       dao.deploymentHistory(environments, services, limit)
     }
 
-  override def createVerification(verification: VerificationForCreate, deployId: Long): Either[Exception, Verification] = {
+  override def createVerification(verification: VerificationForCreate, deployId: Long):
+                                  Either[Exception, Verification] = {
     db.withSession { implicit session =>
       dao.createVerification(verification, deployId)
     }

@@ -14,6 +14,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
   val serviceParamKey = "service"
   val environmentParamKey = "environment"
   val limitParamKey = "limit"
+  val idParamKey = "id"
   val defaultLimit = 100
 
   // TODO: look up commands in scalatra
@@ -48,7 +49,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
    * NOTE: Scalatra executes routes from the bottom UP, so this needs to be above "history" to avoid weird errors
    */
   get("/:id") {
-    val deployId = params("id").toLong
+    val deployId = params(idParamKey).toLong
     deploymentAccess.deploymentById(deployId)
   }
 
@@ -74,9 +75,9 @@ class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
    * "details": additional information about the status
    * returns: the new verification information
    */
-  put("/:id/verification") {
+  put("/:id/verification") { // scalastyle:ignore multiple.string.literals
     val verification = parsedBody.extract[VerificationForCreate]
-    val deployId = params("id").toLong
+    val deployId = params(idParamKey).toLong
 
     val newVerification = deploymentAccess.createVerification(verification, deployId)
     logger.info(s"Created verification event for deploy $deployId: $newVerification")
@@ -89,7 +90,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
    */
   get("/:id/verification") {
     val limit = params.getOrElse(limitParamKey, defaultLimit.toString).toInt
-    val deployId = params("id").toLong
+    val deployId = params(idParamKey).toLong
     deploymentAccess.verificationHistory(Option(deployId))
   }
 }
