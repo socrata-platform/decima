@@ -6,7 +6,7 @@ import com.socrata.decima.util.TimeUtils
 import grizzled.slf4j.Logging
 
 class DeploymentDAO extends VerificationTable with Logging {
-  self: DatabaseDriver =>
+  self: DatabaseDriver => ()
   import self.driver.simple._ // scalastyle:ignore import.grouping
 
   private val defaultHistoryLimit = 100

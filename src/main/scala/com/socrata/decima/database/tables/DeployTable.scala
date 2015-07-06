@@ -7,8 +7,7 @@ import com.socrata.decima.database.DatabaseDriver
 import scala.slick.jdbc.{GetResult, StaticQuery}
 
 trait DeployTable {
-  self: DatabaseDriver =>
-
+  self: DatabaseDriver => ()
   import self.driver.simple._ // scalastyle:ignore import.grouping
 
   case class DeployRow(id: Long,
