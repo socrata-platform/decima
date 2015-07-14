@@ -14,4 +14,4 @@ if [ ! -e $JARFILE ]; then
   cd $BASEDIR && sbt assembly
 fi
 
-java ${JAVA_ARGS} -jar $JARFILE &
+java ${JAVA_ARGS} -jar $JARFILE

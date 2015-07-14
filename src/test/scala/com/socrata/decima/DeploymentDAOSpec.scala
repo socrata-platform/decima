@@ -1,12 +1,12 @@
 package com.socrata.decima
 
-import com.socrata.decima.models.DeployForCreate
+import com.socrata.decima.models._
 import org.scalatest.{BeforeAndAfter, ShouldMatchers, WordSpec}
 
 // scalastyle:off multiple.string.literals
 // scalastyle:off magic.number
 
-class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with H2DBSpecUtils {
+class DeploymentDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with H2DBSpecUtils {
 
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
@@ -18,7 +18,7 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
     cleanUpDb()
   }
 
-  "The Deploy DAO" should {
+  "The Deployment DAO" should {
     "create a deploy event" in {
       db.withSession { implicit session: Session =>
         val deploy = dao.createDeploy(DeployForCreate("service",
@@ -47,6 +47,62 @@ class DeployDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter wit
                                                       "jenkins"))
         deploy should be('right)
         deploy.right.get.dockerTag should be(Option("1.2.3_123_f6b46bd0"))
+      }
+    }
+
+    "create a verification event for a deployment" in {
+      db.withSession { implicit session: Session =>
+        val deploy = dao.createDeploy(DeployForCreate("service",
+                                                      "staging",
+                                                      "1.2.3-SNAPSHOT",
+                                                      Option("1.2.3-SNAPSHOT_555_2e8sd09f"),
+                                                      "blahblah",
+                                                      None,
+                                                      Option("this configuration"),
+                                                      "autoprod:deploy",
+                                                      "a user")).right.get
+        val verification = dao.createVerification(VerificationForCreate("VERIFIED", Option("all instances are in sync")),
+                                                                        deploy.id)
+        verification should be('right)
+        val verifiedDeploy = dao.deploymentById(deploy.id).right.get
+        verifiedDeploy.verified should be("VERIFIED")
+      }
+    }
+
+    "have the verified field set to NONE initially" in {
+      db.withSession { implicit session: Session =>
+        val deploy = dao.createDeploy(DeployForCreate("service",
+                                                      "staging",
+                                                      "1.2.3-SNAPSHOT",
+                                                      Option("1.2.3-SNAPSHOT_555_2e8sd09f"),
+                                                      "blahblah",
+                                                      None,
+                                                      Option("this configuration"),
+                                                      "autoprod:deploy",
+                                                      "a user")).right.get
+        deploy.verified should be("NOT_FOUND")
+      }
+    }
+
+    "retrieve the verification events for a deploy with the most recent first" in {
+      db.withSession { implicit session: Session =>
+        val deploy = dao.createDeploy(DeployForCreate("service",
+                                                      "staging",
+                                                      "1.2.3-SNAPSHOT",
+                                                      Option("1.2.3-SNAPSHOT_555_2e8sd09f"),
+                                                      "blahblah",
+                                                      None,
+                                                      Option("this configuration"),
+                                                      "autoprod:deploy",
+                                                      "a user")).right.get
+        0.to(4).foreach( idx =>
+          dao.createVerification(VerificationForCreate("NOT_VERIFIED", Option(s"test verification event $idx")),
+                                                       deploy.id)
+        )
+        val verified = dao.createVerification(VerificationForCreate("VERIFIED", Option("verified at last!")), deploy.id).right.get
+        val verifications = dao.verificationHistory(Option(deploy.id))
+        verifications.size should be(6)
+        verifications.head should be(verified)
       }
     }
 
