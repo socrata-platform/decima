@@ -1,7 +1,8 @@
 package com.socrata.decima.services
 
 import com.socrata.decima.data_access._
-import com.socrata.decima.models.{VerificationForCreate, DeployForCreate}
+import com.socrata.decima.models.{AutoprodInfo, VerificationForCreate, DeployForCreate}
+import com.socrata.decima.util.AutoprodUtils
 
 /**
  * DeployController is responsible for handling requests to /deploy*
@@ -9,7 +10,7 @@ import com.socrata.decima.models.{VerificationForCreate, DeployForCreate}
  * services in an environment and getting the deploy history.
  * @param deploymentAccess  the database object to use for persistence.
  */
-class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
+class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBase) extends DecimaStack {
 
   val serviceParamKey = "service"
   val environmentParamKey = "environment"
@@ -41,6 +42,27 @@ class DeploymentService(deploymentAccess:DeploymentAccess) extends DecimaStack {
 
     val createdDeploy = deploymentAccess.createDeploy(deploy)
     logger.info("Created deploy event: " + createdDeploy.toString)
+    createdDeploy
+  }
+
+  /**
+   * A PUT call to /deploy/autoprod takes a specific JSON object for an autoprod deploy,
+   * fetches the `build_info.yml` file and tries to create a Deploy object for it.
+   */
+  put("/autoprod") {
+    val autoprodInfo = parsedBody.extract[AutoprodInfo]
+    val buildId = autoprodInfo.buildId match {
+      case Some(id) => id
+      case None => {
+        val builds = s3Access.listBuildPaths(autoprodInfo.project)
+        AutoprodUtils.getLatestBuild(builds)
+      }
+    }
+    val buildInfo = s3Access.getBuildInfo(autoprodInfo.project, buildId)
+    val deploy = AutoprodUtils.infoToDeployModel(autoprodInfo, buildInfo)
+
+    val createdDeploy = deploymentAccess.createDeploy(deploy)
+    logger.info("Created deploy event from autoprod: " + createdDeploy.toString)
     createdDeploy
   }
 

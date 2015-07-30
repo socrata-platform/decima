@@ -1,6 +1,6 @@
 package com.socrata.decima.data_access
 
-import com.socrata.decima.database.{DeploymentDAO, DatabaseDriver}
+import com.socrata.decima.database.{DatabaseDriver, DeploymentDAO}
 import com.socrata.decima.models._
 
 import scala.slick.driver.PostgresDriver.simple.Database

@@ -16,6 +16,7 @@ import scala.slick.jdbc.JdbcBackend._
 class ScalatraBootstrap extends LifeCycle with Logging {
 
   val cpds = DataSourceFromConfig(DecimaConfig.db)
+  val s3 = S3AccessFromConfig(DecimaConfig.s3)
 
   /**
    * Initialize app and set routing configuration
@@ -24,7 +25,8 @@ class ScalatraBootstrap extends LifeCycle with Logging {
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds)
     val deployAccess = new DeploymentAccessWithPostgres(db, new DeploymentDAO() with ActualPostgresDriver)
-    context.mount(new DeploymentService(deployAccess), "/deploy/*")
+    val s3Access = new S3Access(s3, DecimaConfig.s3.bucketName)
+    context.mount(new DeploymentService(deployAccess, s3Access), "/deploy/*")
     context.mount(new DecimaServlet, "/*")
   }
 

@@ -1,6 +1,6 @@
 package com.socrata.decima
 
-import com.socrata.decima.database.{DeploymentDAO, DatabaseDriver}
+import com.socrata.decima.database.{DatabaseDriver, DeploymentDAO}
 import com.socrata.decima.models.DeployForCreate
 
 import scala.slick.driver.H2Driver
