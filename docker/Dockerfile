@@ -13,8 +13,6 @@ ENV SERVER_ARTIFACT  ${SERVER_NAME}-assembly.jar
 
 # Environment Settings.
 ENV JAVA_XMX 512m
-# ENV MIN_THREADS 3
-# ENV MAX_THREADS 5               # Threads currently use about 100m each.
 
 # DB Settings
 ENV PG_DB_HOST localhost
@@ -23,13 +21,15 @@ ENV PG_DB_NAME decima
 ENV PG_DB_USER decima
 ENV PG_DB_PASSWORD_LINE ""
 
+# AWS S3 Settings
+ENV AWS_CREDENTIALS_LINE ""
+ENV BUILD_ARTIFACTS_BUCKET "socrata-build-artifacts-us-west-2"
+
 # Log Settings.
 ENV LOG_LEVEL info
-# ENV LOG_PATTERN %d %-5p [%t]  \(%X{X-Socrata-RequestId}\) [%X{X-Socrata-Resource}] %c{36} "%X{X-Socrata-Host}" %m%n
 
 # Add other required resources to the container
 ADD ship.d /etc/ship.d
 ADD ${SERVER_CONFIG}.j2 /etc/
 ADD ${LOGBACK_CONFIG}.j2 /etc/
 ADD ${SERVER_ARTIFACT} ${SERVER_ROOT}
-
