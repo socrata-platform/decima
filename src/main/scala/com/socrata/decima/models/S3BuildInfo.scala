@@ -12,7 +12,6 @@ package com.socrata.decima.models
  */
 
 //scalastyle:off
-
 class S3BuildInfo () {
   var service: String = null
   var version: String = null

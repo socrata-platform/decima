@@ -45,7 +45,6 @@ object DecimaBuild extends Build {
         "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
         "org.slf4j"           % "slf4j-api"             % "1.7.10",
         "org.yaml"            % "snakeyaml"             % "1.15",
-        "org.scalatest"       %% "scalatest"            % "2.2.4"             % "test",
         "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
         "com.h2database"      % "h2"                    % "1.4.180"           % "test"
       ),

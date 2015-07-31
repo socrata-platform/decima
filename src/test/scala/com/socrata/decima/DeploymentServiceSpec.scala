@@ -10,12 +10,8 @@ import org.json4s.jackson.Serialization.write
 import org.scalatest._
 import org.scalatra.test.scalatest.ScalatraSuite
 
-// scalastyle:off multiple.string.literals
-// scalastyle:off magic.number
-
 class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAfter
                         with ShouldMatchers with H2DBSpecUtils {
-
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
   implicit val formats = DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
@@ -25,11 +21,11 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
   def parseDeployList(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
 
   before {
-    setUpDb
+    setUpDb()
   }
 
   after {
-    cleanUpDb
+    cleanUpDb()
   }
 
   "The Deploy Service /deploy GET" should {

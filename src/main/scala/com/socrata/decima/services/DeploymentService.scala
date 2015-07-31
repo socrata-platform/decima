@@ -1,7 +1,7 @@
 package com.socrata.decima.services
 
 import com.socrata.decima.data_access._
-import com.socrata.decima.models.{AutoprodInfo, VerificationForCreate, DeployForCreate}
+import com.socrata.decima.models.{AutoprodInfo, DeployForCreate, VerificationForCreate}
 import com.socrata.decima.util.AutoprodUtils
 
 /**

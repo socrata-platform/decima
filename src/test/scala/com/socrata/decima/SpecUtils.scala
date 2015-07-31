@@ -5,15 +5,11 @@ import com.socrata.decima.models.DeployForCreate
 
 import scala.slick.driver.H2Driver
 
-// scalastyle:off multiple.string.literals
-// scalastyle:off magic.number
-
 trait ActualH2Driver extends DatabaseDriver {
   val driver = H2Driver
 }
 
 trait H2DBSpecUtils {
-
   val dao = new DeploymentDAO with ActualH2Driver
   import dao.driver.simple._ // scalastyle:ignore import.grouping
   val db = Database.forURL(s"jdbc:h2:mem:$getClass;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1",

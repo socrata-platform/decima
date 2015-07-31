@@ -1,15 +1,12 @@
 package com.socrata.decima.services
 
+import org.apache.http.HttpStatus
 import org.json4s._
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
 import org.slf4j.LoggerFactory
 
-// scalastyle:off multiple.string.literals
-// scalastyle:off magic.number
-
 trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraLogging {
-
   // Sets up automatic case class to JSON output serialization, required by
   // the JValueResult trait.
   protected implicit val jsonFormats: Formats = org.json4s.DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
@@ -28,7 +25,7 @@ trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraL
   error {
     case e: Exception =>
       logger.error("Request error: ", e)
-      response.setStatus(500)
+      response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)
       InternalServerError(ErrorMessage(error = true,
                                         e.getClass.getSimpleName,
                                         e.getMessage,
