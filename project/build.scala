@@ -3,9 +3,8 @@ import Keys._
 import org.scalatra.sbt._
 import com.mojolly.scalate.ScalatePlugin._
 import sbtassembly.{MergeStrategy, AssemblyKeys}
-import AssemblyKeys._
-import sbtbuildinfo.BuildInfoKeys._
-import sbtbuildinfo.{BuildInfoKey, BuildInfoOption, BuildInfoPlugin}
+import sbtassembly.AssemblyKeys._
+import sbtbuildinfo.BuildInfoPlugin
 import scoverage.ScoverageSbtPlugin
 
 object DecimaBuild extends Build {
@@ -56,19 +55,9 @@ object DecimaBuild extends Build {
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      buildInfoKeys := Seq[BuildInfoKey](
-        name,
-        version,
-        scalaVersion,
-        sbtVersion,
-        BuildInfoKey.action("buildTime") { System.currentTimeMillis() },
-        BuildInfoKey.action("revision") { gitSha }),
-      buildInfoPackage := "com.socrata.decima",
-      buildInfoOptions += BuildInfoOption.ToMap,
       ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := ".*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;"
     )
   ).enablePlugins(BuildInfoPlugin)
 
   lazy val gitSha = Process(Seq("git", "describe", "--always", "--dirty", "--long", "--abbrev=10")).!!.stripLineEnd
-
 }
