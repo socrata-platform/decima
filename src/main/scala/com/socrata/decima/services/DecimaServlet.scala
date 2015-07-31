@@ -1,6 +1,5 @@
 package com.socrata.decima.services
 
-import com.socrata.decima.BuildInfo
 import org.json4s.Formats
 import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport
@@ -28,6 +27,6 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
 
   get("/version") {
     contentType = formats("json")
-    BuildInfo.toMap
+    buildinfo.BuildInfo.toJson
   }
 }

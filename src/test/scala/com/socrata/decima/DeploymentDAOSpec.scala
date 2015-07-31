@@ -3,11 +3,7 @@ package com.socrata.decima
 import com.socrata.decima.models._
 import org.scalatest.{BeforeAndAfter, ShouldMatchers, WordSpec}
 
-// scalastyle:off multiple.string.literals
-// scalastyle:off magic.number
-
 class DeploymentDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with H2DBSpecUtils {
-
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
   before {

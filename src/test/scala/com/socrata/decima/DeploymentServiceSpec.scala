@@ -1,34 +1,31 @@
 package com.socrata.decima
 
-import com.socrata.decima.data_access.{DeploymentAccessWithPostgres}
-import com.socrata.decima.models.{DeployForCreate, Deploy}
-import com.socrata.decima.services.{ErrorMessage, DeploymentService}
-import org.scalatest._
-import org.scalatra.test.scalatest.ScalatraSuite
+import com.socrata.decima.data_access.DeploymentAccessWithPostgres
+import com.socrata.decima.mocks.MockS3Access
+import com.socrata.decima.models.{AutoprodInfo, Deploy, DeployForCreate}
+import com.socrata.decima.services.{DeploymentService, ErrorMessage}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization.write
-
-// scalastyle:off multiple.string.literals
-// scalastyle:off magic.number
+import org.scalatest._
+import org.scalatra.test.scalatest.ScalatraSuite
 
 class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAfter
                         with ShouldMatchers with H2DBSpecUtils {
-
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
   implicit val formats = DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
   val deployAccess = new DeploymentAccessWithPostgres(db, dao)
-  addServlet(new DeploymentService(deployAccess), "/deploy/*")
+  addServlet(new DeploymentService(deployAccess, new MockS3Access), "/deploy/*")
 
   def parseDeployList(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
 
   before {
-    setUpDb
+    setUpDb()
   }
 
   after {
-    cleanUpDb
+    cleanUpDb()
   }
 
   "The Deploy Service /deploy GET" should {
@@ -108,8 +105,27 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
         val error = parse(response.body).camelizeKeys.extract[ErrorMessage]
         error.error should be (true)
       }
+    }
+  }
 
+  "The Deploy Service /deploy/autoprod" should {
+    "create a deploy event with info from autoprod" in {
+      val autoprod = AutoprodInfo("core", "CoreServer", "azure-staging", None, "an engineer", "autoprod")
+      put("/deploy/autoprod", write(parse(write(autoprod)).underscoreKeys)) {
+        status should be (200)
+        val deploy = parse(response.body).camelizeKeys.extract[Deploy]
+        deploy.configuration.get should include ("1234100_100")
+        deploy.version should be ("1.2.3")
+      }
+    }
 
+    "create a deploy of a specific build id from autoprod" in {
+      val autoprod = AutoprodInfo("core", "CoreServer", "azure-staging", Some("1234050_50"), "an engineer", "autoprod")
+      put("/deploy/autoprod", write(parse(write(autoprod)).underscoreKeys)) {
+        status should be (200)
+        val deploy = parse(response.body).camelizeKeys.extract[Deploy]
+        deploy.configuration.get should include ("1234050_50")
+      }
     }
   }
 

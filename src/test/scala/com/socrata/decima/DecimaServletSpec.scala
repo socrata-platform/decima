@@ -5,9 +5,6 @@ import org.json4s._
 import org.scalatest.FunSuiteLike
 import org.scalatra.test.scalatest._
 
-// scalastyle:off magic.number
-// scalastyle:off multiple.string.literals
-
 class DecimaServletSpec extends ScalatraSuite with FunSuiteLike {
 
   implicit val formats = DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
