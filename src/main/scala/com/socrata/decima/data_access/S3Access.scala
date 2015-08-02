@@ -1,18 +1,19 @@
 package com.socrata.decima.data_access
 
-import awscala.s3.S3
+import com.amazonaws.services.s3.model.ListObjectsRequest
 import com.socrata.decima.models.S3BuildInfo
 import grizzled.slf4j.Logging
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
+import com.amazonaws.services.s3._
+import scala.collection.JavaConverters._
 
 trait S3AccessBase {
   def listBuildPaths(project: String): List[String]
   def getBuildInfo(project: String, buildId: String): S3BuildInfo
 }
 
-class S3Access(s3: S3, bucketName: String) extends S3AccessBase with Logging {
-  lazy val bucket = s3.bucket(bucketName)
+class S3Access(s3: AmazonS3Client, bucketName: String) extends S3AccessBase with Logging {
   lazy val yaml = new Yaml(new Constructor(classOf[S3BuildInfo]))
 
   /**
@@ -24,9 +25,13 @@ class S3Access(s3: S3, bucketName: String) extends S3AccessBase with Logging {
    * @return a list of build prefixes, e.g. ["CoreServer/12341234_12", ...]
    */
   override def listBuildPaths(project: String): List[String] = {
-    val builds = s3.ls(bucket.get, s"$project/").filter(_.isLeft)
-    if (builds.isEmpty) throw new RuntimeException(s"Unable to find any builds under $project")
-    builds.map(_.left.get).toList
+    val objectListing = s3.listObjects(new ListObjectsRequest()
+                                            .withBucketName(bucketName)
+                                            .withPrefix(s"$project/")
+                                            .withDelimiter("/"))
+    val prefixes = objectListing.getCommonPrefixes.asScala.toList
+    if (prefixes.isEmpty) throw new RuntimeException(s"Unable to find any builds under $project")
+    prefixes
   }
 
   /**
@@ -39,15 +44,15 @@ class S3Access(s3: S3, bucketName: String) extends S3AccessBase with Logging {
     val fileKey = s"$project/$buildId/build_info.yml"
     val s3Url = s"s3://$bucketName/$fileKey"
     logger.info(s"Retrieving build info from $s3Url")
-    val buildInfoObject = s3.get(bucket.get, fileKey)
-    if (buildInfoObject.isEmpty) throw new RuntimeException(s"Unable to find the build info at $s3Url")
     try {
-      val buildInfo = yaml.load(buildInfoObject.get.content).asInstanceOf[S3BuildInfo]
-      buildInfo.s3Url = s3Url
+      val buildInfoObject = s3.getObject(bucketName, fileKey)
+      val inputStream = buildInfoObject.getObjectContent
+      val buildInfo = yaml.load(inputStream).asInstanceOf[S3BuildInfo]
+      buildInfoObject.close()
       buildInfo
     } catch {
       case e: Exception =>
-        throw new RuntimeException("Unable to parse build_info.yml file (it may be incorrectly formatted):\n"
+        throw new RuntimeException(s"Unable to download and parse build_info.yml at $s3Url. Is it present?\n"
           + e.getMessage)
     }
   }
