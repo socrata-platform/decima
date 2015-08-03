@@ -1,11 +1,12 @@
 package com.socrata.decima.data_access
 
+import com.amazonaws.services.s3._
 import com.amazonaws.services.s3.model.ListObjectsRequest
 import com.socrata.decima.models.S3BuildInfo
 import grizzled.slf4j.Logging
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
-import com.amazonaws.services.s3._
+
 import scala.collection.JavaConverters._
 
 trait S3AccessBase {
@@ -25,11 +26,15 @@ class S3Access(s3: AmazonS3Client, bucketName: String) extends S3AccessBase with
    * @return a list of build prefixes, e.g. ["CoreServer/12341234_12", ...]
    */
   override def listBuildPaths(project: String): List[String] = {
-    val objectListing = s3.listObjects(new ListObjectsRequest()
+    var objectListing = s3.listObjects(new ListObjectsRequest()
                                             .withBucketName(bucketName)
                                             .withPrefix(s"$project/")
                                             .withDelimiter("/"))
-    val prefixes = objectListing.getCommonPrefixes.asScala.toList
+    var prefixes = objectListing.getCommonPrefixes.asScala.toList
+    while(objectListing.isTruncated) {
+      objectListing = s3.listNextBatchOfObjects(objectListing)
+      prefixes ++= objectListing.getCommonPrefixes.asScala.toList
+    }
     if (prefixes.isEmpty) throw new RuntimeException(s"Unable to find any builds under $project")
     prefixes
   }
@@ -49,6 +54,7 @@ class S3Access(s3: AmazonS3Client, bucketName: String) extends S3AccessBase with
       val inputStream = buildInfoObject.getObjectContent
       val buildInfo = yaml.load(inputStream).asInstanceOf[S3BuildInfo]
       buildInfoObject.close()
+    buildInfo.s3Url = s3Url
       buildInfo
     } catch {
       case e: Exception =>
