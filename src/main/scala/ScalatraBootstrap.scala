@@ -16,7 +16,7 @@ import scala.slick.jdbc.JdbcBackend._
 class ScalatraBootstrap extends LifeCycle with Logging {
 
   val cpds = DataSourceFromConfig(DecimaConfig.db)
-  val s3 = S3AccessFromConfig(DecimaConfig.s3)
+  val s3 = AmazonS3ClientFromConfig(DecimaConfig.s3)
 
   /**
    * Initialize app and set routing configuration

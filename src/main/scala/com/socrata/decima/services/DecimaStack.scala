@@ -47,4 +47,7 @@ trait ScalatraLogging extends ScalatraServlet {
   }
 }
 
-case class ErrorMessage(error: Boolean, exception: String, message: String, stackTrace: Array[String])
+case class ErrorMessage(error: Boolean,
+                        exception: String,
+                        message: String,
+                        stackTrace: Array[String])

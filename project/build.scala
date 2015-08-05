@@ -27,7 +27,6 @@ object DecimaBuild extends Build {
       resolvers += "Socrata Cloudbees" at "https://repository-socrata-oss.forge.cloudbees.com/release",
       resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns),
       libraryDependencies ++= Seq(
-        "com.github.seratch"  %% "awscala"              % "0.5.+",
         "com.typesafe.slick"  %% "slick"                % "2.1.0",
         "org.clapper"         %% "grizzled-slf4j"       % "1.0.2",
         "org.json4s"          %% "json4s-ext"           % Json4sVersion,
@@ -35,18 +34,19 @@ object DecimaBuild extends Build {
         "org.scalatra"        %% "scalatra"             % ScalatraVersion,
         "org.scalatra"        %% "scalatra-json"        % ScalatraVersion,
         "org.scalatra"        %% "scalatra-scalate"     % ScalatraVersion,
-        "c3p0"                % "c3p0"                  % "0.9.1.2",
-        "ch.qos.logback"      % "logback-classic"       % "1.1.2"             % "runtime",
-        "com.typesafe"        % "config"                % "1.2.1",
-        "javax.servlet"       % "javax.servlet-api"     % "3.1.0",
-        "org.eclipse.jetty"   % "jetty-plus"            % JettyVersion        % "container",
-        "org.eclipse.jetty"   % "jetty-webapp"          % JettyVersion        % "container;compile",
-        "org.liquibase"       % "liquibase-core"        % "3.3.3",
-        "org.postgresql"      % "postgresql"            % "9.4-1201-jdbc4",
-        "org.slf4j"           % "slf4j-api"             % "1.7.10",
-        "org.yaml"            % "snakeyaml"             % "1.15",
+        "com.amazonaws"       %  "aws-java-sdk-s3"      % "1.10.+",
+        "c3p0"                %  "c3p0"                 % "0.9.1.2",
+        "ch.qos.logback"      %  "logback-classic"      % "1.1.2"             % "runtime",
+        "com.typesafe"        %  "config"               % "1.2.1",
+        "javax.servlet"       %  "javax.servlet-api"    % "3.1.0",
+        "org.eclipse.jetty"   %  "jetty-plus"           % JettyVersion        % "container",
+        "org.eclipse.jetty"   %  "jetty-webapp"         % JettyVersion        % "container;compile",
+        "org.liquibase"       %  "liquibase-core"       % "3.3.3",
+        "org.postgresql"      %  "postgresql"           % "9.4-1201-jdbc4",
+        "org.slf4j"           %  "slf4j-api"            % "1.7.10",
+        "org.yaml"            %  "snakeyaml"            % "1.15",
         "org.scalatra"        %% "scalatra-scalatest"   % ScalatraVersion     % "test",
-        "com.h2database"      % "h2"                    % "1.4.180"           % "test"
+        "com.h2database"      %  "h2"                   % "1.4.180"           % "test"
       ),
       assemblyMergeStrategy in assembly := {
         case "mime.types" => MergeStrategy.first
