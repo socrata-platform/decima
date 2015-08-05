@@ -29,6 +29,7 @@ trait DecimaStack extends ScalatraServlet with JacksonJsonSupport with ScalatraL
       InternalServerError(ErrorMessage(error = true,
                                         e.getClass.getSimpleName,
                                         e.getMessage,
+                                        e.getCause,
                                         e.getStackTrace.map(s => s.toString)))
   }
 
@@ -47,4 +48,8 @@ trait ScalatraLogging extends ScalatraServlet {
   }
 }
 
-case class ErrorMessage(error: Boolean, exception: String, message: String, stackTrace: Array[String])
+case class ErrorMessage(error: Boolean,
+                        exception: String,
+                        message: String,
+                        cause: Throwable,
+                        stackTrace: Array[String])

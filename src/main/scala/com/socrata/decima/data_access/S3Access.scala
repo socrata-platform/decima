@@ -62,8 +62,7 @@ class S3Access(s3: AmazonS3Client, bucketName: String) extends S3AccessBase with
       buildInfo
     } catch {
       case e: Exception =>
-        throw new RuntimeException(s"Unable to download and parse build_info.yml at $s3Url. Is it present?\n"
-          + e.getMessage)
+        throw new RuntimeException(s"Unable to download and parse build_info.yml at $s3Url. Is it present?", e)
     }
   }
 }
