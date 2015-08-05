@@ -7,7 +7,7 @@ import org.json4s.jackson.JsonMethods._
 
 object AutoprodUtils extends Logging {
 
-  def getLatestBuild(buildIds: List[String]): String = {
+  def getLatestBuild(buildIds: Seq[String]): String = {
     buildIds.map(_.split("/").last).sortWith(numericSort).last
   }
 
