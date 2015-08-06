@@ -3,5 +3,6 @@ language: scala
 scala:
   - 2.11.6
 script:
-  - sbt +compile +styleCheck +coverage +test +assembly 
-
+  - sbt +compile +styleCheck +coverage +test +assembly
+after_success:
+  - sbt coveralls
