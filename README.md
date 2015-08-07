@@ -3,6 +3,8 @@ A service to track deployments and service versions across environments.
 
 [![Build Status](https://travis-ci.org/socrata-platform/decima.svg?branch=master)](https://travis-ci.org/socrata-platform/decima)
 
+Most of the documentation is kept on [apiary](http://docs.decima.apiary.io).
+
 ## Build & Run ##
 
 Locally:
