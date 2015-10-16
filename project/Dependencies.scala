@@ -4,6 +4,7 @@ object Dependencies {
   private val ScalatraVersion = "2.3.1"
   private val JettyVersion = "9.1.5.v20140505"
   private val Json4sVersion = "3.3.0.RC1"
+  private val AkkaVersion = "2.3.14"
 
   val slick           = "com.typesafe.slick"     %% "slick"                % "2.1.0"
   val grizzledSlf4j   = "org.clapper"            %% "grizzled-slf4j"       % "1.0.2"
@@ -13,6 +14,7 @@ object Dependencies {
   val scalatraJson    = "org.scalatra"           %% "scalatra-json"        % ScalatraVersion
   val scalatraScalate = "org.scalatra"           %% "scalatra-scalate"     % ScalatraVersion
   val awsS3           = "com.amazonaws"          %  "aws-java-sdk-s3"      % "1.10.+"
+  val awsSqs          = "com.amazonaws"          %  "aws-java-sdk-sqs"     % "1.10.+"
   val c3p0            = "c3p0"                   %  "c3p0"                 % "0.9.1.2"
   val logbackClassic  = "ch.qos.logback"         %  "logback-classic"      % "1.1.2"
   val typesafeConfig  = "com.typesafe"           %  "config"               % "1.2.1"
@@ -25,6 +27,9 @@ object Dependencies {
   val snakeYaml       = "org.yaml"               %  "snakeyaml"            % "1.15"
   val scalatraTest    = "org.scalatra"           %% "scalatra-scalatest"   % ScalatraVersion
   val h2Db            = "com.h2database"         %  "h2"                   % "1.4.180"
+  val elasticMq       = "org.elasticmq"          %% "elasticmq-rest-sqs"   % "0.8.11"
+  val akkaActor       = "com.typesafe.akka"      %% "akka-actor"           % AkkaVersion
+  val akkaTestkit     = "com.typesafe.akka"      %% "akka-testkit"         % AkkaVersion
   val scalaTest       = "org.scalatest"          %% "scalatest"            % "2.2.4"
   val scalaMock       = "org.scalamock"          %% "scalamock-scalatest-support" % "3.2"
 
@@ -44,6 +49,10 @@ object Dependencies {
       slick,
       h2Db % "test"
     )
+    val Akka = Seq(
+      akkaActor,
+      akkaTestkit % "test"
+    )
     val Scalatra = Json4s ++ Seq(
       Dependencies.scalatra,
       scalatraJson,
@@ -56,3 +65,4 @@ object Dependencies {
     )
   }
 }
+

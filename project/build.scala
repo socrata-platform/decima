@@ -5,7 +5,7 @@ object DecimaBuild extends sbt.Build {
     "decima",
     file(".")
   ).settings(BuildSettings.buildSettings : _*)
-   .aggregate(decimaLib, decimaService)
+   .aggregate(decimaLib, decimaService, decimaPoller)
 
   lazy val gitSha = Process(Seq("git", "describe", "--always", "--dirty", "--long", "--abbrev=10")).!!.stripLineEnd
 
@@ -20,4 +20,6 @@ object DecimaBuild extends sbt.Build {
 
   val decimaLib = p("decima-lib", DecimaLib)
   val decimaService = p("decima-http", DecimaHttp, decimaLib)
+  val decimaPoller = p("decima-poller", DecimaPoller, decimaLib)
 }
+
