@@ -10,8 +10,8 @@ Most of the documentation is kept on [apiary](http://docs.decima.apiary.io).
 Locally:
 ```sh
 $ sbt
-> container:start
-> browse
+> decima-service/container:start
+> decima-service/browse
 ```
 
 If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.

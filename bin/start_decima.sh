@@ -8,7 +8,7 @@ else
   JAVA_ARGS="-Dconfig.file=$DECIMA_CONFIG"
 fi
 
-JARFILE=$BASEDIR/target/scala-2.11/decima-assembly-*.jar
+JARFILE=$BASEDIR/decima-http/target/scala-2.11/decima-http-assembly-*.jar
 
 if [ ! -e $JARFILE ]; then
   cd $BASEDIR && sbt assembly
