@@ -14,7 +14,7 @@ trait S3AccessBase {
   def getBuildInfo(project: String, buildId: String): S3BuildInfo
 }
 
-class S3Access(s3: AmazonS3Client, bucketName: String) extends S3AccessBase with Logging {
+class S3Access(s3: AmazonS3, bucketName: String) extends S3AccessBase with Logging {
   lazy val yaml = new Yaml(new Constructor(classOf[S3BuildInfo]))
 
   /**

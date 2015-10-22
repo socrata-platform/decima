@@ -140,6 +140,27 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
         deploys.length should be (12)
       }
     }
+
+    "filter the history of deploys by service" in {
+      get("/deploy/history?service=core,phidippides") {
+        val deploys = parseDeployList(response.body)
+        deploys.length should be (7)
+      }
+    }
+
+    "filter the hisory of deploys by environment" in {
+      get("/deploy/history?environment=rc,production") {
+        val deploys = parseDeployList(response.body)
+        deploys.length should be (4)
+      }
+    }
+
+    "return a limited number of deploys" in {
+      get("/deploy/history?limit=3") {
+        val deploys = parseDeployList(response.body)
+        deploys.length should be (3)
+      }
+    }
   }
 
   "The Deploy Service /deploy/ID" should {
@@ -150,5 +171,4 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
       }
     }
   }
-
 }

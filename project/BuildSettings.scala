@@ -23,7 +23,8 @@ object BuildSettings {
             val oldStrategy = (assemblyMergeStrategy in assembly).value
             oldStrategy(x)
         },
-        ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := ".*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;"
+        ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages :=
+          ".*BuildInfo;.*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;"
       )
 
   def projectSettings(assembly: Boolean = false): Seq[Setting[_]] = {

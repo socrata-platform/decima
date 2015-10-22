@@ -1,12 +1,11 @@
 package com.socrata.decima.http
 
 
-import com.socrata.decima.data_access.DeploymentAccess.{DuplicateDeploy, DeployCreated}
-import com.socrata.decima.data_access._
-import com.socrata.decima.models.{Verification, Deploy, AutoprodInfo}
-import com.socrata.decima.data_access.S3AccessBase
+import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DuplicateDeploy}
+import com.socrata.decima.data_access.{S3AccessBase, _}
+import com.socrata.decima.models.{AutoprodInfo, Deploy, Verification}
 import com.socrata.decima.util.AutoprodUtils
-import org.json4s.JsonAST.{JInt, JField, JObject}
+import org.json4s.JsonAST.{JField, JInt, JObject}
 import org.scalatra.Conflict
 
 /**

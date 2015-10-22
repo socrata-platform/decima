@@ -2,7 +2,7 @@ package com.socrata.decima.database
 
 import java.sql.SQLException
 
-import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DuplicateDeploy, DeployResult}
+import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DeployResult, DuplicateDeploy}
 import com.socrata.decima.database.tables.VerificationTable
 import com.socrata.decima.models._
 import com.socrata.decima.util.TimeUtils
@@ -19,10 +19,10 @@ object DeploymentDAO {
 class DeploymentDAO extends VerificationTable with Logging {
   self: DatabaseDriver => ()
 
-  import self.driver.simple._
-  import DeploymentDAO._
-
   // scalastyle:ignore import.grouping
+  import DeploymentDAO._
+  // scalastyle:ignore import.grouping
+  import self.driver.simple._
 
   def createDeploy(deploy: Deploy)(implicit session: Session): Try[DeployResult] = {
     Try {

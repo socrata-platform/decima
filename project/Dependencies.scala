@@ -27,7 +27,6 @@ object Dependencies {
   val snakeYaml       = "org.yaml"               %  "snakeyaml"            % "1.15"
   val scalatraTest    = "org.scalatra"           %% "scalatra-scalatest"   % ScalatraVersion
   val h2Db            = "com.h2database"         %  "h2"                   % "1.4.180"
-  val elasticMq       = "org.elasticmq"          %% "elasticmq-rest-sqs"   % "0.8.11"
   val akkaActor       = "com.typesafe.akka"      %% "akka-actor"           % AkkaVersion
   val akkaTestkit     = "com.typesafe.akka"      %% "akka-testkit"         % AkkaVersion
   val scalaTest       = "org.scalatest"          %% "scalatest"            % "2.2.4"
@@ -39,6 +38,7 @@ object Dependencies {
       json4sExt
     )
     val Logging = Seq(
+      logbackClassic,
       grizzledSlf4j,
       slf4jApi
     )

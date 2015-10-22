@@ -7,9 +7,10 @@ object Reaper {
 }
 
 class Reaper extends Actor {
+  // scalastyle:ignore import.grouping
   import Reaper._
 
-  final def receive = {
+  final def receive: PartialFunction[Any, Unit] = {
     case WatchMe(ref) =>
       context.watch(ref)
     case Terminated(ref) =>
