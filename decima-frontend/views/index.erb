@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/moment.js"></script>
+    <script src="/index.js"></script>
+    <script src="/jquery.stickytableheaders.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <style>
+      thead.tableFloatingHeaderOriginal {
+        border-top: none;
+        border-bottom: none;
+        background-color: #FFF;
+        top: 0;
+      }
+      td.matching {
+        background-color: #66a266;
+      }
+      td.not_matching {
+        background-color: #ffae4c;
+      }
+      td {
+        background-color: grey;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Decima<small> -- deploy tracker</small></h1>
+      </div>
+        <div class="container" id="services-table-container">
+          <table id="services-table" class="table table-bordered header-fixed" >
+            <thead id="services-table-header"></thead>
+            <tbody id="services-table-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script id="service-header" type="text/x-handlepars-template">
+      <tr>
+        <th>service</th>
+        {{#each this}}
+        <th>{{this}}</th>
+        {{/each}}
+      </tr>
+    </script>
+    <script id="service-template" type="text/x-handlebars-template">
+      <tr>
+        <th>{{service}}</th>
+        {{#each environments}}
+          <td class="{{match}}">
+            <div>{{version}}</div>
+            <div>{{docker_tag}}</div>
+            <div>{{service_sha}}</div>
+            <div>{{deploy_method}}</div>
+            <div>{{deployed_by}}</div>
+            <div>{{timeago}}</div>
+          </td>
+        {{/each}}
+      </tr>
+    </script>
+  </body>
+</html>
