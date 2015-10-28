@@ -1,0 +1,13 @@
+c3p0 {
+  jdbcUrl = "jdbc:postgresql://{{ PG_DB_HOST }}:{{ PG_DB_PORT }}/{{ PG_DB_NAME }}"
+  user = "{{ PG_DB_USER }}"
+  {{ PG_DB_PASSWORD_LINE }}
+}
+
+aws {
+  {{ AWS_CREDENTIALS_LINE }}
+  sqs {
+      baseEndpoint = "{{ SQS_BASE_ENDPOINT }}"
+      queueName = "{{ SQS_QUEUE_NAME }}"
+  }
+}
