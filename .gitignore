@@ -2,7 +2,7 @@
 *.log
 
 # don't keep docker artifacts
-docker/*.jar
+*.jar
 
 # sbt specific
 .cache
