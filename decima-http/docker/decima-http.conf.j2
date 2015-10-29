@@ -9,7 +9,9 @@ c3p0 {
   {{ PG_DB_PASSWORD_LINE }}
 }
 
-s3 {
+aws {
   {{ AWS_CREDENTIALS_LINE }}
-  bucketName = "{{ BUILD_ARTIFACTS_BUCKET }}"
+  s3 {
+     bucketName = "{{ BUILD_ARTIFACTS_BUCKET }}"
+  }
 }

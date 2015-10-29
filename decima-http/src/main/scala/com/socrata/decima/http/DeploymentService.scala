@@ -42,6 +42,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
    * The call returns the created Deploy object (with current timestamp and new ID)
    */
   put("/") {
+    logger.info(s"Received deploy: $parsedBody")
     createDeploy(parsedBody.extract[Deploy])
   }
 

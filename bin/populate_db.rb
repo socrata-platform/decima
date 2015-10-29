@@ -35,11 +35,13 @@ deploys = [
 
 deploys.each do |d|
   puts 'adding deploy event: ' + d.to_json
-  HTTParty.put(
-    'http://localhost:8080/deploy',
+  response = HTTParty.put(
+    'http://localhost:7474/deploy',
 #    'http://decima.app.marathon.aws-us-west-2-staging.socrata.net/deploy',
+#    'http://10.110.33.88:7474/deploy',
     body: d.to_json,
     headers: { 'Content-Type' => 'application/json' }
   )
+  puts "response: #{response.code}"
   sleep 1
 end
