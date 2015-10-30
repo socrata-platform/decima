@@ -137,5 +137,5 @@ $(document).ready(function() {
   $("#service-filter").keypress(updateSearch);
   $("#service-filter").keyup(updateSearch);
   refreshPage();
-  //setInterval(refreshPage, 30000);
+  setInterval(refreshPage, 30000);
 });

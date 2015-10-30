@@ -30,4 +30,23 @@ object BuildSettings {
   def projectSettings(assembly: Boolean = false): Seq[Setting[_]] = {
     buildSettings ++ (if (!assembly) Seq(AssemblyKeys.assembly := file(".")) else Nil)
   }
+
+  def webProjectSettings(assembly: Boolean = false): Seq[Setting[_]] = {
+    // Make sure we bundle static resources for webapps in the jar.
+    // Method taken from: http://stackoverflow.com/a/17913254
+    projectSettings(assembly = assembly) ++
+    Seq(
+      // copy web resources to /webapp folder
+      resourceGenerators in Compile <+= (resourceManaged, baseDirectory) map {
+        (managedBase, base) =>
+          val webappBase = base / "src" / "main" / "webapp"
+          for {
+            (from, to) <- webappBase ** "*" x rebase(webappBase, managedBase / "main" / "webapp")
+          } yield {
+            Sync.copy(from, to)
+            to
+          }
+      }
+    )
+  }
 }

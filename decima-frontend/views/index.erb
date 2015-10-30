@@ -13,25 +13,44 @@
     <link rel="stylesheet" href="/app.css">
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <a class="clearfix header-link" href="#">
+    <div class="sidebar hidden-md hidden-sm hidden-xs">
+      <div class="container sidebar-container">
+        <a class="header-link" href="#">
           <img class="header-img" width="201" height="100" src="/socrata-logo.svg">
         </a>
-        <div class="header-text">Decima -- Deployment Tracking</div>
-      </div>
-        <div class="container" id="services-table-rows"></div>
+        <div class="legend">
+          <div class="legend-item version-match">Matches RC</div>
+          <div class="legend-item version-no-match">Does Not Match RC</div>
+          <div class="legend-item version-na">No Data</div>
+        </div>
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="service-filter" class="control-label">Services</label>
+            <div class="input-group">
+              <input id="service-filter" type="text" class="form-control" name="service-filter" placeholder="Filter Services">
+              <div class="input-group-addon"><span class="glyphicon glyphicon-info-sign"></span></div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
+    <div class="container">
+      <div class="header">
+        <div class="header-text">Decima -- Deployment Tracking</div>
+      </div>
+      <div class="container" id="services-table-rows"></div>
+    </div>
     <script id="service-template" type="text/x-handlebars-template">
-      <div class="service row">
-        <!--<h3>{{service}}</h3>-->
-        <div class="col-md-3 service-name">{{service}}</div>
-        {{#each environments}}
-        <div class="col-md-2 {{col_class}} {{#if match}}{{match}}{{else}}service-column version-na{{/if}}">
-          {{environment}}
+      <div class="service">
+        <!--<h3>{{service_alias}}</h3>-->
+        <div class="service-name">{{service_alias}}</div>
+        <div class="region-container">
+          {{#each env_parity}}
+          <div class="region {{col_class}} {{match_class}}">
+            {{environment}}
+          </div>
+          {{/each}}
         </div>
-        {{/each}}
       </div>
     </script>
   </body>
