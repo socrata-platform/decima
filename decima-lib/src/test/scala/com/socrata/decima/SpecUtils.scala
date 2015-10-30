@@ -40,6 +40,36 @@ trait H2DBSpecUtils {
     }
   }
 
+  def setupSoqlParityTest(): Unit = {
+    val deploys = Seq(
+      Deploy("soql-server-pg1-staging", "staging", "0.6.17-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "jenkins", "apps-marathon:deploy"),
+      Deploy("soql-server-pg2-rc", "rc", "0.6.17-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
+      Deploy("soql-server-pg3-prod", "production", "0.6.17-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer")
+    )
+    val startTime = DateTime.now
+
+    db.withSession { implicit session: Session =>
+      deploys.zipWithIndex.foreach { case (deploy, idx) =>
+        dao.createDeploy(deploy.copy(deployedAt = startTime.plusSeconds(idx)))
+      }
+    }
+  }
+
+  def setupSoqlNoParityTest(): Unit = {
+    val deploys = Seq(
+      Deploy("soql-server-pg1-staging", "staging", "0.6.17-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "jenkins", "apps-marathon:deploy"),
+      Deploy("soql-server-pg2-rc", "rc", "0.6.17-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
+      Deploy("soql-server-pg3-prod", "production", "0.6.16-SNAPSHOT", Option("0.6.17-SNAPSHOT_2896_90e23a16"), "90e23a16", Option("90e23a16"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer")
+    )
+    val startTime = DateTime.now
+
+    db.withSession { implicit session: Session =>
+      deploys.zipWithIndex.foreach { case (deploy, idx) =>
+        dao.createDeploy(deploy.copy(deployedAt = startTime.plusSeconds(idx)))
+      }
+    }
+  }
+
   def setUpDb(): Unit = {
     db.withSession { implicit session: Session =>
       dao.deployTable.ddl.create
