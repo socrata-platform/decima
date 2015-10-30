@@ -1,0 +1,33 @@
+GIT
+  remote: git@github.com:socrata/decima-ruby.git
+  revision: 0aaf4e84053386a1db3fc338887693410f7dbc9b
+  specs:
+    decima-ruby (0.1.0)
+      addressable (~> 2.3)
+      httparty (~> 0.13)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.3.8)
+    httparty (0.13.5)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.3)
+    multi_xml (0.5.5)
+    rack (1.6.4)
+    rack-protection (1.5.3)
+      rack
+    sinatra (1.4.6)
+      rack (~> 1.4)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    tilt (2.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  decima-ruby!
+  httparty
+  sinatra

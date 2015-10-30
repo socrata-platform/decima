@@ -1,5 +1,6 @@
 *.class
 *.log
+*.swp
 
 # don't keep docker artifacts
 docker/*.jar

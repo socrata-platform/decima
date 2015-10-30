@@ -18,6 +18,7 @@ trait DeploymentAccess {
   def createDeploy(deploy: Deploy): Try[DeployResult]
   def createVerification(verification: Verification): Try[Verification]
   def deploymentById(deployId: Long): Try[Deploy]
+  def currentDeploymentSummary(services: Option[Array[String]]): Try[Seq[DeploySummary]]
   def currentDeploymentState(environments: Option[Array[String]], services: Option[Array[String]]): Try[Seq[Deploy]]
   def deploymentHistory(environments: Option[Array[String]],
                         services: Option[Array[String]],
@@ -29,6 +30,11 @@ case class DeploymentAccessWithPostgres(db: Database, dao: DeploymentDAO with Da
   override def createDeploy(deploy: Deploy): Try[DeployResult] =
     db.withSession { implicit session =>
       dao.createDeploy(deploy)
+    }
+
+  override def currentDeploymentSummary(services: Option[Array[String]]): Try[Seq[DeploySummary]] =
+    db.withSession { implicit session =>
+      dao.currentSummary(services)
     }
 
   override def currentDeploymentState(environments: Option[Array[String]],

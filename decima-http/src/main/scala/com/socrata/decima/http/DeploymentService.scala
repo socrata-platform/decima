@@ -114,6 +114,16 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
     deploymentAccess.verificationHistory(Option(deployId), limit).get
   }
 
+  /**
+   * A GET call to /deploy/summary returns a summary of the current state of deployment for all deployed
+   * services.  Services are considered in 'parity' if their current deployed versions match that which
+   * is deployed to the reference environment (currently statically set to RC).
+   */
+  get("/summary") {
+    val services = params.get(serviceParamKey).map(_.split(","))
+    deploymentAccess.currentDeploymentSummary(services).get
+  }
+
   private def createDeploy(deploy: Deploy): AnyRef = {
     deploymentAccess.createDeploy(deploy).get match {
       case DeployCreated(createdDeploy) =>
