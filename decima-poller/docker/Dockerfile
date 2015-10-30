@@ -24,6 +24,9 @@ ENV AWS_CREDENTIALS_LINE ""
 ENV SQS_BASE_ENDPOINT ""
 ENV SQS_QUEUE_NAME "DecimaTest"
 
+# Akka Settings
+ENV LOG_LEVEL "info"
+
 # Log Settings.
 ENV LOG_LEVEL info
 
