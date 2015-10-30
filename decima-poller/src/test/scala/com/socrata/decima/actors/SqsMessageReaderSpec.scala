@@ -12,8 +12,9 @@ import com.socrata.decima.actors.SqsMessageFinalizer.FinalizeSqsMessage
 import com.socrata.decima.actors.SqsMessageReader.PollDeploysMessage
 import com.socrata.decima.config.{PollerAwsConfig, SqsConfig}
 import com.socrata.decima.models.Deploy
-import com.socrata.decima.util.JsonFormats
+import com.socrata.decima.util.{TimeUtils, JsonFormats}
 import com.typesafe.config.ConfigFactory
+import grizzled.slf4j.Logging
 import org.joda.time.DateTime
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -24,7 +25,7 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Matchers, WordSpecLike}
 import scala.collection.JavaConverters._
 
 class SqsMessageReaderSpec extends TestKit(ActorSystem("testSystem")) with WordSpecLike with Matchers with BeforeAndAfter
-  with BeforeAndAfterAll with ImplicitSender with MockFactory {
+  with BeforeAndAfterAll with ImplicitSender with MockFactory with Logging {
 
   implicit val jsonFormats = JsonFormats.Formats
 
@@ -41,7 +42,7 @@ class SqsMessageReaderSpec extends TestKit(ActorSystem("testSystem")) with WordS
     Option("blah blah blah"),
     "apps-marathon:deploy",
     "jenkisdfns",
-    deployedAt = DateTime.parse("2015-10-26T09:46:05-07:00")
+    deployedAt = DateTime.parse("2014-09-02T09:46:05Z")
   )
 
   val malformedDeployString = """{"service": "blah blah"}"""
@@ -172,6 +173,33 @@ class SqsMessageReaderSpec extends TestKit(ActorSystem("testSystem")) with WordS
         messageReaderRef ! PollDeploysMessage(self)
         expectMsg(FinalizeSqsMessage(SqsMessageMetadata("no time deploy handle")))
         expectMsg(PollDeploysMessage(self))
+      }
+    }
+
+    "parse deploys with time to the correct time" in {
+      logger.info(s"deploy = ${deployToJson(testDeploy)}")
+
+      withMocks { (client, messageReaderRef) =>
+        (client.receiveMessageAsync(_: ReceiveMessageRequest))
+          .expects(receiveRequest)
+          .onCall { request: ReceiveMessageRequest =>
+          executorService.submit(new Callable[ReceiveMessageResult] {
+            override def call(): ReceiveMessageResult = {
+              Thread.sleep(500)
+              val result = new ReceiveMessageResult()
+                .withMessages(List(new Message()
+                .withBody(deployToJson(testDeploy))
+                .withMessageId("deploy id")
+                .withReceiptHandle("deploy handle")).asJavaCollection)
+              result
+            }
+          })
+        }
+
+        messageReaderRef ! PollDeploysMessage(self)
+        val message = expectMsgClass(classOf[DeployMessage])
+        logger.info(s"received deploy: ${deployToJson(message.deploy)}")
+        TimeUtils.toSqlTimestamp(message.deploy.deployedAt) should be(TimeUtils.toSqlTimestamp(testDeploy.deployedAt))
       }
     }
   }
