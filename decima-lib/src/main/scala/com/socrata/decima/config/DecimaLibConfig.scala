@@ -27,6 +27,7 @@ class AwsConfig(config: Config) extends Logging {
     }
     else if (config.hasPath("accessKeyId") && config.hasPath("secretAccessKey")) {
       logger.info("Using the AWS credentials specified in the Decima config file.")
+      logger.info(s"Access key id: ${config.getString("accessKeyId")}")
       new AWSCredentialsProvider {
         val creds = new BasicAWSCredentials(config.getString("accessKeyId"), config.getString("secretAccessKey"))
         override def refresh(): Unit = {} // Noop
