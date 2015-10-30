@@ -208,9 +208,9 @@ class DeploymentDAO extends VerificationTable with Logging {
   }
 
   private def getServiceAlias(service: String): String = {
-    val soqlServerPattern = """^(soql-server).*""".r
+    val soqlServerPattern = """^(soql-server-pg).*""".r
     service match {
-      case soqlServerPattern(s) => "soql-server"
+      case soqlServerPattern(s) => "soql-server-pg"
       case _ => service
     }
   }

@@ -191,7 +191,7 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
     "soql-server be in parity" in {
       setupSoqlParityTest()
       get("/deploy/summary") {
-        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server" }
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server-pg" }
         summaries.length should be (1)
         summaries.head.parity should be (true)
       }
@@ -200,8 +200,7 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
     "soql-server not be in parity" in {
       setupSoqlNoParityTest()
       get("/deploy/summary") {
-        println(response.body)
-        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server" }
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server-pg" }
         summaries.length should be (1)
         summaries.head.parity should be (false)
       }
