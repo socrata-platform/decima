@@ -2,7 +2,7 @@ package com.socrata.decima
 
 import com.socrata.decima.data_access.DeploymentAccessWithPostgres
 import com.socrata.decima.mocks.MockS3Access
-import com.socrata.decima.models.{AutoprodInfo, Deploy}
+import com.socrata.decima.models.{AutoprodInfo, Deploy, DeploySummary}
 import com.socrata.decima.http.{DeploymentService, ErrorMessage}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -19,6 +19,7 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
   addServlet(new DeploymentService(deployAccess, new MockS3Access), "/deploy/*")
 
   def parseDeployList(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
+  def parseDeploySummaryList(body: String): Seq[DeploySummary] = parse(body).camelizeKeys.extract[Seq[DeploySummary]]
 
   before {
     setUpDb()
@@ -168,6 +169,41 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
       get("/deploy/1") {
         val deploy = parse(body).camelizeKeys.extract[Deploy]
         deploy.id should be(1)
+      }
+    }
+  }
+
+  "The Deploy Summary Service /deploy/summary GET" should {
+    "return 200 on a simple get" in {
+      get("/deploy/summary") {
+        status should be (200)
+      }
+    }
+
+    "summary should aggregate deploys" in {
+      setupSoqlParityTest()
+      get("/deploy/summary") {
+        val summaries = parseDeploySummaryList(response.body)
+        summaries.length should be (4)
+      }
+    }
+
+    "soql-server be in parity" in {
+      setupSoqlParityTest()
+      get("/deploy/summary") {
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server" }
+        summaries.length should be (1)
+        summaries.head.parity should be (true)
+      }
+    }
+
+    "soql-server not be in parity" in {
+      setupSoqlNoParityTest()
+      get("/deploy/summary") {
+        println(response.body)
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server" }
+        summaries.length should be (1)
+        summaries.head.parity should be (false)
       }
     }
   }
