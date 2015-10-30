@@ -42,108 +42,53 @@ var renderTableHeader = function() {
 };
 
 var renderDataIntoPage = function(data) {
-
-  // Ignore all staging deploys & deleted deploys for dashboard
-  var data = _.reject(data, function(deploy) {
-    var stagingRe = /staging/;
-    return stagingRe.test(deploy.environment) || deploy.version == "DELETED";
-  })
-
-  // Build a hash of { service: { environment: deploy } }
-  var deploys = {};
-  _.each(data, function(deploy) {
-    var service = deploy.service;
-    if (service.match(/^soql-server/)) {
-      service = "soql-server";
-    } else if (service.match(/^secondary-watcher/)) {
-      service = "secondary-watcher";
-    }
-    if (deploys[service] == undefined) {
-      deploys[service] = {};
-    }
-    deploys[service][deploy.environment] = deploy;
-  });
-
-  // Condense into an array [ { service: service, environment: deploy, ... } ]
-  var deployList = _.map(deploys, function(deploysByEnv, service) {
-    var deployMap = {};
-    deployMap["service"] = service;
-    _.each(deploysByEnv, function(deploy, env) {
-      if (environmentMap[env] == undefined) {
-        console.log(env + " is not a recognized environment")
-        return;
-      }
-      if (deployMap[environmentMap[env]] != undefined) {
-        console.log(service + " has more than one deploy in " + environmentMap[env]);
-      }
-      deployMap[environmentMap[env]] = deploy;
-    });
-    return deployMap;
-  });
-
-  // Sort by most recent PROD deploy
-  var currentTime = moment().unix()
-  var deployList = _.sortBy(deployList, function(d) {
-    var mostRecent = 0;
-    _.each(_.without(logicalEnvironments, "rc", "staging"), function(env) {
-      var deploy = d[env];
-      if (deploy != undefined) {
-        var time = moment(deploy.deployed_at).unix();
-        if (mostRecent < time) {
-          mostRecent = time;
-        }
-      }
-    });
-    return mostRecent;
-  }).reverse();
-
-  // Further simplify into [ service: service, environments [ rcDeploy, ... ] ]
-  // Additionally, check for equality between RC & prod environments
-  var rows = _.map(deployList, function(deployMap) {
-    var row = {
-      service: deployMap["service"],
-      environments: []
-    };
-    _.each(logicalEnvironments, function(env) {
-      var deploy = deployMap[env];
-      if (deploy != undefined) {
-        deploy["match"] = environmentMatches(deploy, deployMap["rc"]);
-        deploy["timeago"] = moment(deploy["deployed_at"]).fromNow();
-        deploy["environment"] = env;
-        deploy["col_class"] = environmentColMap[env];
-      } else {
-        deploy = []
-        deploy["match"] = "version-na";
-        deploy["environment"] = env;
-        deploy["col_class"] = environmentColMap[env];
-      }
-      row["environments"].push(deploy);
-    });
-    return row;
-  });
-
+  console.log("newRenderDataIntoPage");
   var source = $("#service-template").html();
   var template = Handlebars.compile(source);
 
   $("#services-table-rows").html("");
 
-  _.each(rows, function(row){
-    $("#services-table-rows").append(template(row));
+  _.each(data, function(service){
+    service['env_parity'] = {}
+    _.each(service['environments'], function(deps, dEnv) {
+      var mappedDEnv = environmentMap[dEnv];
+      if (typeof mappedDEnv != "undefined") {
+        var mappendDEnvParity = _.reduce(deps, function(memo, dep) { return memo && dep.parity_with_reference; }, true);
+        service['env_parity'][mappedDEnv] = {
+          "parity": mappendDEnvParity,
+          "match_class": mappendDEnvParity? "version-match" : "version-no-match",
+          "col_class": environmentColMap[mappedDEnv],
+          "environment": mappedDEnv
+        };
+      } else {
+        service['env_parity'][mappedDEnv] = {
+          "parity": false,
+          "match_class": "version-unknown",
+          "col_class": environmentColMap[mappedDEnv],
+          "environment": mappedDEnv
+        };
+      }
+    });
+    service['env_parity'] = _.map(logicalEnvironments, function(env) {
+      if (service['env_parity'][env]) {
+        return service['env_parity'][env];
+      } else {
+        return { "parity": false, "match_class": "version-na", "col_class": environmentColMap[env], "environment": env};
+      }
+    })
+    $("#services-table-rows").append(template(service));
   });
 
   console.log("Done");
-};
+}
 
 var refreshPage = function() {
   console.log("Refresh");
-  jQuery.get("/deploy", {}, renderDataIntoPage, "json");
-  //Get the data from decima
-  //Create the hash to pass to handlebars
-  //Render the handlerbars templates into the document
+  jQuery.get("http://localhost:8080/deploy/summary", {}, renderDataIntoPage, "json");
 };
 
 $(document).ready(function() {
   console.log("In ready");
   refreshPage();
-  //setInterval(refreshPage, 30000);
+  setInterval(refreshPage, 30000);
 });
