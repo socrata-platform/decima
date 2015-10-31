@@ -81,7 +81,7 @@ class DeploymentDAO extends VerificationTable with Logging {
         val envs = dpls.groupBy(x => getEnvironmentAlias(x.environment))
         val ref = (envs get "rc").map { _.head }
         val refVersion = ref.map { _.version }
-	val refDockerTag = ref.flatMap { _.dockerTag }
+        val refDockerTag = ref.flatMap { _.dockerTag }
         val refServiceSha = ref.map { _.serviceSha }
 
         val envSummaries = envs.mapValues { _.map(deployToEnvironmentDeploySummary(ref, _)) }
@@ -94,7 +94,6 @@ class DeploymentDAO extends VerificationTable with Logging {
                       refServiceSha,
                       "rc",
                       envSummaries)
-
       }
     }.toSeq
   }
@@ -109,7 +108,7 @@ class DeploymentDAO extends VerificationTable with Logging {
   }
 
   def environmentParityWithReference(reference: Deploy, deploy: Deploy): Boolean = {
-    reference.version == deploy.version && reference.dockerTag == deploy.dockerTag && reference.serviceSha == deploy.serviceSha
+    reference.version == deploy.version && reference.dockerTag == deploy.dockerTag && reference.serviceSha == deploy.serviceSha // scalastyle:ignore
   }
 
   def currentDeployment(environments: Option[Array[String]],
