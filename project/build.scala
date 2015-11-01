@@ -22,4 +22,3 @@ object DecimaBuild extends sbt.Build {
   val decimaService = p("decima-http", DecimaHttp, decimaLib)
   val decimaPoller = p("decima-poller", DecimaPoller, decimaLib)
 }
-

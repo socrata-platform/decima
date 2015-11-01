@@ -1,7 +1,7 @@
 FROM socrata/java
 
 # Service specific settings.
-ENV SERVICE_NAME decima-http
+ENV PROJECT_NAME decima-http
 ENV SERVICE_PORT 7474
 EXPOSE 7474
 
@@ -9,10 +9,10 @@ EXPOSE 7474
 ENV JAVA_XMX 512m
 
 # Some paths/locations we care about
-ENV SERVICE_ROOT      /srv/${SERVICE_NAME}/
-ENV SERVICE_CONFIG    ${SERVICE_NAME}.conf
-ENV LOGBACK_CONFIG    ${SERVICE_NAME}-logback.xml
-ENV SERVICE_ARTIFACT  ${SERVICE_NAME}-assembly.jar
+ENV SERVICE_ROOT      /srv/${PROJECT_NAME}/
+ENV SERVICE_CONFIG    ${PROJECT_NAME}.conf
+ENV LOGBACK_CONFIG    ${PROJECT_NAME}-logback.xml
+ENV SERVICE_ARTIFACT  ${PROJECT_NAME}-assembly.jar
 
 # DB Settings
 ENV PG_DB_HOST localhost
