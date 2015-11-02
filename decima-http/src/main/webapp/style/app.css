@@ -1,0 +1,93 @@
+body {
+  background-color: #e2e2e2;
+}
+
+.header {
+  margin-top: 20px;
+}
+.header-text {
+  float: none;
+  clear: none;
+  font-family:'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
+  font-size: 40px;
+  line-height: 100px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.header-link {
+  display: inline-block;
+  clear: left;
+  float: left;
+}
+
+.header-img {
+  margin-top: 0px;
+  float: left;
+  margin-left: 225px;
+}
+
+.service.row {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.service.row h3 {
+  padding-left: 15px;
+}
+
+/****************************
+   Bootstrap column styling
+/****************************/
+.col-md-3.service-name {
+  line-height: 26px;
+  text-align: right;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+.col-md-2.service-column {
+  height: 30px;
+  background-color: #000;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px 1px 2px 1px;
+  line-height: 26px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.col-md-2.service-column.right-column {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-right: 2px solid black;
+}
+
+.col-md-2.service-column.left-column {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-left: 2px solid black;
+}
+
+.col-md-2.service-column.left-column.version-match,
+.col-md-2.service-column.right-column.version-match,
+.col-md-2.service-column.version-match {
+  background-color: green;
+}
+
+.col-md-2.service-column.left-column.version-no-match,
+.col-md-2.service-column.right-column.version-no-match,
+.col-md-2.service-column.version-no-match {
+  background-color: yellow;
+}
+
+.col-md-2.service-column.left-column.version-unknown,
+.col-md-2.service-column.right-column.version-unknown,
+.col-md-2.service-column.version-unknown {
+  background-color: red;
+}
+
+.col-md-2.service-column.left-column.version-na,
+.col-md-2.service-column.right-column.version-na,
+.col-md-2.service-column.version-na {
+  background-color: grey;
+}

@@ -70,6 +70,47 @@ class DeploymentDAO extends VerificationTable with Logging {
     res.map(rowToModelDeploy)
   }
 
+  def currentSummary(services: Option[Array[String]])
+                       (implicit session:Session): Try[Seq[DeploySummary]] = Try {
+    val res = currentDeploymentQuery.list.filter(row => services match {
+      case Some(s) => s.contains(row.service)
+      case None => true
+    }).map(rowToModelDeploy).groupBy(x => getServiceAlias(x.service))
+    res.map {
+      case (svc, dpls) => {
+        val envs = dpls.groupBy(x => getEnvironmentAlias(x.environment))
+        val ref = (envs get "rc").map { _.head }
+        val refVersion = ref.map { _.version }
+        val refDockerTag = ref.flatMap { _.dockerTag }
+        val refServiceSha = ref.map { _.serviceSha }
+
+        val envSummaries = envs.mapValues { _.map(deployToEnvironmentDeploySummary(ref, _)) }
+        val parity = envSummaries.flatMap { case (k, v) => v.map { _.parityWithReference } }.reduceLeft (_ && _)
+        // NOTE :: RC may not exists in this map...
+        DeploySummary(svc,
+                      parity,
+                      refVersion,
+                      refDockerTag,
+                      refServiceSha,
+                      "rc",
+                      envSummaries)
+      }
+    }.toSeq
+  }
+
+  def deployToEnvironmentDeploySummary(reference: Option[Deploy], deploy: Deploy): EnvironmentDeploySummary = {
+    EnvironmentDeploySummary(deploy.service,
+                             getServiceAlias(deploy.service),
+                             deploy.environment,
+                             reference.map { environmentParityWithReference(_, deploy) }.getOrElse(false),
+                             "rc",
+                             deploy)
+  }
+
+  def environmentParityWithReference(reference: Deploy, deploy: Deploy): Boolean = {
+    reference.version == deploy.version && reference.dockerTag == deploy.dockerTag && reference.serviceSha == deploy.serviceSha // scalastyle:ignore
+  }
+
   def currentDeployment(environments: Option[Array[String]],
                         services: Option[Array[String]])
                        (implicit session:Session): Try[Seq[Deploy]] = Try {
@@ -156,6 +197,20 @@ class DeploymentDAO extends VerificationTable with Logging {
     session.withTransaction {
       val query = verificationTable.filter(_.deployId === deployId).sortBy(_.time.desc).take(1)
       query.run.headOption.map(rowToModelVerification)
+    }
+  }
+
+  private def getEnvironmentAlias(environment: String): String = {
+    environment match {
+      case _ => environment
+    }
+  }
+
+  private def getServiceAlias(service: String): String = {
+    val soqlServerPattern = """^(soql-server-pg).*""".r
+    service match {
+      case soqlServerPattern(s) => "soql-server-pg"
+      case _ => service
     }
   }
 }
