@@ -18,16 +18,21 @@ function getUrlVars() {
 var logicalEnvironments = [ "us-west", "eu-west", "fedramp" ];
 
 var environmentMap = {
-  "azure-rc": "rc",
+  "azure_rc": "rc",
   "rc": "rc",
   "production": "us-west",
   "prod": "us-west",
   "infrastructure": "us-west",
   "aws-us-east-1-fedramp-prod": "fedramp",
+  "aws_us_east_1_fedramp_prod": "fedramp",
   "us-east-1-fedramp-prod": "fedramp",
+  "us_east_1_fedramp_prod": "fedramp",
   "fedramp-prod": "fedramp",
+  "fedramp_prod": "fedramp",
   "azure-westeurope-production": "eu-west",
-  "eu-west-1-prod": "eu-west"
+  "azure_westeurope_production": "eu-west",
+  "eu-west-1-prod": "eu-west",
+  "eu_west_1_prod": "eu-west"
 };
 
 var environmentColMap = {

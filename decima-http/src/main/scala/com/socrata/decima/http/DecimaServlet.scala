@@ -42,7 +42,10 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
         <form class="form-inline">
           <div class="form-group">
             <label for="service-filter" class="control-label">Services</label>
-            <input id="service-filter" type="search" name="service-filter" placeholder="Filter Services">
+            <div class="input-group">
+              <input id="service-filter" type="text" class="form-control" name="service-filter" placeholder="Filter Services">
+              <div class="input-group-addon"><span class="glyphicon glyphicon-info-sign"></span></div>
+            </div>
           </div>
         </form>
       </div>
