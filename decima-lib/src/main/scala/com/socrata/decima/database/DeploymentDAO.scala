@@ -73,7 +73,7 @@ class DeploymentDAO extends VerificationTable with Logging {
   def currentSummary(services: Option[Array[String]])
                        (implicit session:Session): Try[Seq[DeploySummary]] = Try {
     val res = currentDeploymentQuery.list.filter(row => services match {
-      case Some(s) => s.contains(row.service)
+      case Some(s) => s.contains(getServiceAlias(row.service))
       case None => true
     }).map(rowToModelDeploy).groupBy(x => getServiceAlias(x.service))
     res.map {

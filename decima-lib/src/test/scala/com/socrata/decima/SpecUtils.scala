@@ -1,7 +1,7 @@
 package com.socrata.decima
 
 import com.socrata.decima.database.{DatabaseDriver, DeploymentDAO}
-import com.socrata.decima.models.Deploy
+import com.socrata.decima.models.{Deploy, Verification}
 import org.joda.time.DateTime
 
 import scala.slick.driver.H2Driver
@@ -32,11 +32,18 @@ trait H2DBSpecUtils {
       Deploy("frontend", "staging", "1.1.2", None, "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer"),
       Deploy("phidippides", "staging", "0.13", None, "blah", Option("blah"), Option("""{ "this": "is a config"}"""), "autoprod", "an engineer")
     )
+    val verifications = Seq(
+      Verification("initiated", 1, 0, Option("whee!")),
+      Verification("completed", 1, 1, Option("whee!"))
+    )
     // scalastyle:on line.size.limit
     // Explicitly set increasing time to avoid any race conditions in test due to object creation
     val startTime = DateTime.now
     deploys.zipWithIndex.foreach { case (deploy, idx) =>
       dao.createDeploy(deploy.copy(deployedAt = startTime.plusSeconds(idx)))
+    }
+    verifications.foreach { case (verification) =>
+      dao.createVerification(verification)
     }
   }
 

@@ -318,5 +318,35 @@ class DeploymentDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter
         deployHistory.count(_.environment == "production") should be (0)
       }
     }
+
+    "retrieve current deploy summary" in {
+      setupSoqlParityTest()
+      db.withSession { implicit session: Session =>
+        val deploySummary = dao.currentSummary(None).get
+        deploySummary.count(_.serviceAlias == "core") should be (1)
+        deploySummary.count(_.serviceAlias == "frontend") should be (1)
+        deploySummary.count(_.serviceAlias == "phidippides") should be (1)
+        deploySummary.count(_.serviceAlias == "soql-server-pg") should be (1)
+        deploySummary.length should be (4)
+        deploySummary.foreach { x =>
+          x.serviceAlias match {
+            case "core" =>  x.parity should be (false)
+            case "frontend" =>  x.parity should be (false)
+            case "phidippides" =>  x.parity should be (false)
+            case "soql-server-pg" =>  x.parity should be (true)
+          }
+        }
+      }
+    }
+
+    "filter current deploy summary by service" in {
+      setupSoqlParityTest()
+      db.withSession { implicit session: Session =>
+        val deploySummary = dao.currentSummary(Option(Array("soql-server-pg"))).get
+        deploySummary.length should be (1)
+        deploySummary.count(_.serviceAlias == "soql-server-pg") should be (1)
+        deploySummary.head.parity should be (true)
+      }
+    }
   }
 }
