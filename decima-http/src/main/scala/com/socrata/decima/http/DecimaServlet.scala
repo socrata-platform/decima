@@ -13,6 +13,7 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
   override protected implicit def jsonFormats: Formats = JsonFormats.Formats
 
   get("/") {
+    // scalastyle:off
     """
     <html>
       <head>
@@ -72,6 +73,7 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
   </body>
     </html>
     """
+    // scalastyle:on
   }
 
   get("/version") {
