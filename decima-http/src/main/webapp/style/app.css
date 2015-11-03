@@ -1,9 +1,9 @@
 body {
-  background-color: #e2e2e2;
+  background-color: #e3e3e3;
 }
 
 .header {
-  margin-top: 20px;
+  margin-top: 100px;
 }
 .header-text {
   float: none;
@@ -16,15 +16,11 @@ body {
 }
 
 .header-link {
-  display: inline-block;
-  clear: left;
   float: left;
 }
-
 .header-img {
-  margin-top: 0px;
-  float: left;
-  margin-left: 225px;
+  display: block;
+  margin: 0px auto 0px auto;
 }
 
 .service.row {
@@ -34,6 +30,110 @@ body {
 .service.row h3 {
   padding-left: 15px;
 }
+
+.sidebar {
+  float: left;
+  position: fixed;
+  width: 100%;
+  height: 100px;
+}
+.sidebar-container {
+  border-bottom: 1px solid black;
+  z-index: 1000;
+  background-color: #e3e3e3;
+}
+
+form {
+  width: 160px;
+  margin-top: 20px;
+  margin-left: 3%;
+  float: left
+}
+
+.legend-item {
+  width: 15%;
+  margin: 25px 3% 20px 3%;
+  line-height: 40px;
+  border: 2px dashed black;
+  text-align: center;
+  float: left;
+}
+
+/****************************
+   Service Styling
+/****************************/
+div#services-table-rows {
+  padding: 0px;
+}
+
+.service {
+  width: 300px;
+  float: left;
+  margin: 15px;
+  height: 60px;
+  text-align: center;
+  line-height: 30px;
+}
+.service-name {
+  color: #FFF;
+  font-weight: bolder;
+  background-color: #9ad3de;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px 2px 0px 2px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.region.service-column {
+  width: 33.3%;
+  float: left;
+  font-weight: bolder;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px 1px 2px 1px;
+}
+
+.region.service-column.left-column {
+  /*border-top-left-radius: 15px;*/
+  border-bottom-left-radius: 20px;
+  border-left: 2px solid black;
+}
+
+.region.service-column.right-column {
+  /*border-top-right-radius: 15px;*/
+  border-bottom-right-radius: 20px;
+  border-right: 2px solid black;
+}
+
+.legend-item.version-match,
+.region.service-column.left-column.version-match,
+.region.service-column.right-column.version-match,
+.region.service-column.version-match {
+  background-color: #89C541;
+}
+
+.legend-item.version-no-match,
+.region.service-column.left-column.version-no-match,
+.region.service-column.right-column.version-no-match,
+.region.service-column.version-no-match {
+  background-color: #cdd422;
+}
+
+.legend-item.version-unknown,
+.region.service-column.left-column.version-unknown,
+.region.service-column.right-column.version-unknown,
+.region.service-column.version-unknown {
+  background-color: red;
+}
+
+.legend-item.version-na,
+.region.service-column.left-column.version-na,
+.region.service-column.right-column.version-na,
+.region.service-column.version-na {
+  background-color: #c9c9c9;
+}
+
 
 /****************************
    Bootstrap column styling
@@ -90,4 +190,28 @@ body {
 .col-md-2.service-column.right-column.version-na,
 .col-md-2.service-column.version-na {
   background-color: grey;
+}
+
+.version span {
+  display: none;
+}
+
+.service-tag span {
+  display: none;
+}
+
+.service-sha span {
+  display: none;
+}
+
+.service-deploy-method span {
+  display: none;
+}
+
+.service-deploy-by span {
+  display: none;
+}
+
+.service-deploy-time span {
+  display: none;
 }

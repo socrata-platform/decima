@@ -1,16 +1,21 @@
 'use strict';
 
-var environmentMatches = function(a,b){
-  if ( a == undefined || b == undefined ) {
-    return "version-unknown";
-  }
-  if (a.version == b.version && a.service_sha == b.service_sha && a.docker_tag == b.docker_tag) {
-    return "version-match";
-  }
-  return "version-no-match";
-};
+window._OR = ",";
 
-var logicalEnvironments = [ "rc", "us-west", "eu-west", "fedramp" ];
+function getUrlVars() {
+    // Blatantly stolen from http://stackoverflow.com/questions/4656843/jquery-get-querystring-from-url for
+    // reasons of expedience
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+var logicalEnvironments = [ "us-west", "eu-west", "fedramp" ];
 
 var environmentMap = {
   "azure-rc": "rc",
@@ -27,24 +32,52 @@ var environmentMap = {
 
 var environmentColMap = {
   "rc": "service-column left-column",
-  "us-west": "service-column",
+  "us-west": "service-column left-column",
   "eu-west": "service-column",
   "fedramp": "service-column right-column"
 };
 
 var renderTableHeader = function() {
-  console.log("Rendering table header.")
   var template = Handlebars.compile($("#service-header").html());
   $("#services-table-header").html("");
   $("#services-table-header").append(template(logicalEnvironments));
   $("#services-table-container").stickyTableHeaders();
-  console.log("done with header");
 };
 
+window._data = undefined;
+
+var updateSearch = function() {
+  var newSearch = $("#service-filter").val(),
+      proto = window.location.protocol,
+      host = window.location.host,
+      path = window.location.pathname,
+      newurl = proto + "//" + host + path + '?filter=' + newSearch;
+  window.history.pushState({path:newurl},'',newurl);
+  renderDataIntoPage();
+}
+
+var filterServices = function(services, sFilter) {
+  if (typeof sFilter == "string") { sFilter = sFilter.split(_OR); }
+  if (sFilter.indexOf("") > -1) { delete sFilter.splice(sFilter.indexOf(""), 1); }
+  if (sFilter.length == 0) { return services; }
+
+  var newServices = [];
+  _.each(services, function(service) {
+    if (sFilter.reduce(function(p,n) { return p || !!service["service_alias"].match(n); }, false)) {
+      newServices.push(service)
+    }
+  });
+  return newServices;
+}
+
 var renderDataIntoPage = function(data) {
-  console.log("newRenderDataIntoPage");
-  var source = $("#service-template").html();
-  var template = Handlebars.compile(source);
+  if (typeof data == "undefined") { data = window._data; }
+  else { window._data = data; }
+  var source = $("#service-template").html(),
+      template = Handlebars.compile(source),
+      qs = getUrlVars();
+
+  if (qs.indexOf('filter') > -1) { data = filterServices(data, qs['filter']); }
 
   $("#services-table-rows").html("");
 
@@ -78,17 +111,26 @@ var renderDataIntoPage = function(data) {
     })
     $("#services-table-rows").append(template(service));
   });
-
-  console.log("Done");
 }
 
 var refreshPage = function() {
-  console.log("Refresh");
-  jQuery.get("http://localhost:8080/deploy/summary", {}, renderDataIntoPage, "json");
+  jQuery.get("/deploy/summary", {}, renderDataIntoPage, "json");
 };
 
 $(document).ready(function() {
-  console.log("In ready");
+  var qs = getUrlVars();
+  if (qs.indexOf('filter') > -1) {
+    var sFilter = qs['filter'];
+    if (typeof sFilter == "string") { sFilter = sFilter.split(_OR); }
+    if (sFilter.indexOf("") > -1) { delete sFilter.splice(sFilter.indexOf(""), 1); }
+    if (sFilter.length != 0) {
+      $("#service-filter").val(sFilter.join(_OR));
+      updateSearch()
+    }
+  }
+
+  $("#service-filter").keypress(updateSearch);
+  $("#service-filter").keyup(updateSearch);
   refreshPage();
   setInterval(refreshPage, 30000);
 });

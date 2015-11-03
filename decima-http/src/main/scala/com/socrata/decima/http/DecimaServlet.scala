@@ -28,29 +28,45 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
         <script src="/script/app.js"></script>
         <link rel="stylesheet" href="/style/app.css">
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <a class="clearfix header-link" href="#">
-              <img class="header-img" width="201" height="100" src="/images/socrata-logo.svg">
-            </a>
-            <div class="header-text">Decima -- Deployment Tracking</div>
-          </div>
-            <div class="container" id="services-table-rows"></div>
-          </div>
+  <body>
+    <div class="sidebar hidden-md hidden-sm hidden-xs">
+      <div class="container sidebar-container">
+        <a class="header-link" href="#">
+          <img class="header-img" width="201" height="100" src="/images/socrata-logo.svg">
+        </a>
+        <div class="legend">
+          <div class="legend-item version-match">Matches RC</div>
+          <div class="legend-item version-no-match">Does Not Match RC</div>
+          <div class="legend-item version-na">No Data</div>
         </div>
-        <script id="service-template" type="text/x-handlebars-template">
-          <div class="service row">
-            <!--<h3>{{service_alias}}</h3>-->
-            <div class="col-md-3 service-name">{{service_alias}}</div>
-            {{#each env_parity}}
-            <div class="col-md-2 {{col_class}} {{match_class}}">
-              {{environment}}
-            </div>
-            {{/each}}
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="service-filter" class="control-label">Services</label>
+            <input id="service-filter" type="search" name="service-filter" placeholder="Filter Services">
           </div>
-        </script>
-      </body>
+        </form>
+      </div>
+    </div>
+    <div class="container">
+      <div class="header">
+        <div class="header-text">Decima -- Deployment Tracking</div>
+      </div>
+      <div class="container" id="services-table-rows"></div>
+    </div>
+    <script id="service-template" type="text/x-handlebars-template">
+      <div class="service">
+        <!--<h3>{{service_alias}}</h3>-->
+        <div class="service-name">{{service_alias}}</div>
+        <div class="region-container">
+          {{#each env_parity}}
+          <div class="region {{col_class}} {{match_class}}">
+            {{environment}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </script>
+  </body>
     </html>
     """
   }
