@@ -20,7 +20,8 @@ object JettyLauncher extends App {
   val context = new WebAppContext()
 
   context setContextPath rootPath
-  context.setResourceBase("src/main/webapp")
+  val resourceBase = getClass.getClassLoader.getResource("webapp").toExternalForm
+  context.setResourceBase(resourceBase)
   context.addEventListener(new ScalatraListener)
   context.addServlet(classOf[DefaultServlet], rootPath)
 

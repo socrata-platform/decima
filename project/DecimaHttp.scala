@@ -7,7 +7,7 @@ import Dependencies._
 
 object DecimaHttp {
   lazy val settings: Seq[Setting[_]] =
-    BuildSettings.projectSettings(assembly = true) ++
+    BuildSettings.webProjectSettings(assembly = true) ++
     ScalatraPlugin.scalatraWithJRebel ++
     scalateSettings ++
       Seq(
