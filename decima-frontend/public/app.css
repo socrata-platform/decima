@@ -67,7 +67,7 @@ div#services-table-rows {
 }
 
 .service {
-  width: 300px;
+  width: 261px;
   float: left;
   margin: 15px;
   height: 60px;
@@ -86,7 +86,7 @@ div#services-table-rows {
 }
 
 .region.service-column {
-  width: 33.3%;
+  width: 87px;
   float: left;
   font-weight: bolder;
   border-style: solid;
