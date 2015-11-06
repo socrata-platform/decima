@@ -208,7 +208,7 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
       setupSoqlParityTest()
       get("/deploy/summary") {
         val summaries = parseDeploySummaryList(response.body)
-        summaries.length should be (4)
+        summaries.length should be (3)
       }
     }
 
