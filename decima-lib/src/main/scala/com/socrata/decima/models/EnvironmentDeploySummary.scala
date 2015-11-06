@@ -5,4 +5,5 @@ case class EnvironmentDeploySummary(service: String,
                                     environment: String,
                                     parityWithReference: Boolean,
                                     referenceEnvironment: String,
-                                    deploy: Deploy)
+                                    deploy: Deploy,
+                                    parityStatus: String)
