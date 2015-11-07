@@ -75,12 +75,14 @@ class DeploymentDAO extends VerificationTable with Logging {
   def currentSummary(services: Option[Array[String]])
                        (implicit session:Session): Try[Seq[DeploySummary]] = Try {
     val staging = """.*(staging).*""".r
+    val retiredEnvs = """(azure-eastus-production)""".r
     currentDeploymentQuery.list.filter(row => services match {
       case Some(s) => s.contains(getServiceAlias(row.service))
       case None => true
     })
     .filter(row => row.environment match {
       case staging(e) => false
+      case retiredEnvs(e) => false
       case _ => true
     })
     .map(rowToModelDeploy)

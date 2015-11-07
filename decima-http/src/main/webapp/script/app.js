@@ -17,23 +17,32 @@ function getUrlVars() {
 
 var logicalEnvironments = [ "us-west", "eu-west", "fedramp" ];
 
+
 var environmentMap = {
-  "azure_rc": "rc",
+  "staging": "staging",
   "rc": "rc",
-  "production": "us-west",
-  "prod": "us-west",
-  "infrastructure": "us-west",
-  "aws-us-east-1-fedramp-prod": "fedramp",
-  "aws_us_east_1_fedramp_prod": "fedramp",
-  "us-east-1-fedramp-prod": "fedramp",
-  "us_east_1_fedramp_prod": "fedramp",
-  "fedramp-prod": "fedramp",
-  "fedramp_prod": "fedramp",
-  "azure-westeurope-production": "eu-west",
-  "azure_westeurope_production": "eu-west",
-  "eu-west-1-prod": "eu-west",
-  "eu_west_1_prod": "eu-west"
-};
+  "us_west_2": "us-west",
+  "eu_west_1": "eu-west",
+  "fedramp": "fedramp"
+}
+
+// var environmentMap = {
+//   "azure_rc": "rc",
+//   "rc": "rc",
+//   "production": "us-west",
+//   "prod": "us-west",
+//   "infrastructure": "us-west",
+//   "aws-us-east-1-fedramp-prod": "fedramp",
+//   "aws_us_east_1_fedramp_prod": "fedramp",
+//   "us-east-1-fedramp-prod": "fedramp",
+//   "us_east_1_fedramp_prod": "fedramp",
+//   "fedramp-prod": "fedramp",
+//   "fedramp_prod": "fedramp",
+//   "azure-westeurope-production": "eu-west",
+//   "azure_westeurope_production": "eu-west",
+//   "eu-west-1-prod": "eu-west",
+//   "eu_west_1_prod": "eu-west"
+// };
 
 var environmentColMap = {
   "rc": "service-column left-column",
@@ -91,10 +100,10 @@ var renderDataIntoPage = function(data) {
     _.each(service['environments'], function(deps, dEnv) {
       var mappedDEnv = environmentMap[dEnv];
       if (typeof mappedDEnv != "undefined") {
-        var mappendDEnvParity = _.reduce(deps, function(memo, dep) { return memo && dep.parity_with_reference; }, true);
+        var mappendDEnvParity = _.reduce(deps, function(memo, dep) { return memo == dep.parity_status ? memo : 'version-match-error'; }, deps[0].parity_status);
         service['env_parity'][mappedDEnv] = {
           "parity": mappendDEnvParity,
-          "match_class": mappendDEnvParity? "version-match" : "version-no-match",
+          "match_class": mappendDEnvParity,
           "col_class": environmentColMap[mappedDEnv],
           "environment": mappedDEnv
         };
@@ -137,5 +146,5 @@ $(document).ready(function() {
   $("#service-filter").keypress(updateSearch);
   $("#service-filter").keyup(updateSearch);
   refreshPage();
-  setInterval(refreshPage, 30000);
+//  setInterval(refreshPage, 30000);
 });

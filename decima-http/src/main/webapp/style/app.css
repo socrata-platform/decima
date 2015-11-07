@@ -59,6 +59,20 @@ form {
   float: left;
 }
 
+.legend-sub-item {
+    width: 33.33333%;
+    height: 44px;
+    float: left;
+    z-index: 1;
+}
+
+.legend-text {
+    z-index: 10000000;
+    width: 171px;
+    position: absolute;
+}
+
+
 /****************************
    Service Styling
 /****************************/
@@ -106,24 +120,38 @@ div#services-table-rows {
   border-right: 2px solid black;
 }
 
-.legend-item.version-match,
-.region.service-column.left-column.version-match,
-.region.service-column.right-column.version-match,
-.region.service-column.version-match {
+.legend-item.version-0,
+.region.service-column.left-column.version-0,
+.region.service-column.right-column.version-0,
+.region.service-column.version-0 {
   background-color: #89C541;
 }
 
-.legend-item.version-no-match,
-.region.service-column.left-column.version-no-match,
-.region.service-column.right-column.version-no-match,
-.region.service-column.version-no-match {
+.legend-sub-item.version-1,
+.region.service-column.left-column.version-1,
+.region.service-column.right-column.version-1,
+.region.service-column.version-1 {
   background-color: #cdd422;
 }
 
-.legend-item.version-unknown,
-.region.service-column.left-column.version-unknown,
-.region.service-column.right-column.version-unknown,
-.region.service-column.version-unknown {
+.legend-sub-item.version-2,
+.region.service-column.left-column.version-2,
+.region.service-column.right-column.version-2,
+.region.service-column.version-2 {
+  background-color: #FFA500;
+}
+
+.legend-sub-item.version-3,
+.region.service-column.left-column.version-3,
+.region.service-column.right-column.version-3,
+.region.service-column.version-3 {
+  background-color: #008080;
+}
+
+.legend-item.version-match-error,
+.region.service-column.left-column.version-match-error,
+.region.service-column.right-column.version-match-error,
+.region.service-column.version-match-error {
   background-color: red;
 }
 
