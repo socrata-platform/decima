@@ -29,15 +29,20 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport {
         <script src="/script/app.js"></script>
         <link rel="stylesheet" href="/style/app.css">
       </head>
-  <body>
+ <body>
     <div class="sidebar hidden-md hidden-sm hidden-xs">
       <div class="container sidebar-container">
         <a class="header-link" href="#">
           <img class="header-img" width="201" height="100" src="/images/socrata-logo.svg">
         </a>
         <div class="legend">
-          <div class="legend-item version-match">Matches RC</div>
-          <div class="legend-item version-no-match">Does Not Match RC</div>
+          <div class="legend-item version-0">Matches RC</div>
+          <div class="legend-item">
+            <div class="legend-sub-item version-1"></div>
+            <div class="legend-sub-item version-2"></div>
+            <div class="legend-sub-item version-3"></div>
+            <div class="legend-text">Does Not Match RC</div>
+          </div>
           <div class="legend-item version-na">No Data</div>
         </div>
         <form class="form-inline">
