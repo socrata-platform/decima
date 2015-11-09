@@ -91,12 +91,16 @@ div#services-table-rows {
 .service-name {
   color: #FFF;
   font-weight: bolder;
-  background-color: #9ad3de;
+  background-color: darkgray;
   border-style: solid;
   border-color: black;
   border-width: 2px 2px 0px 2px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
+}
+
+.service-name a {
+  color: #FFF;
 }
 
 .region.service-column {
@@ -109,56 +113,36 @@ div#services-table-rows {
 }
 
 .region.service-column.left-column {
-  /*border-top-left-radius: 15px;*/
   border-bottom-left-radius: 20px;
   border-left: 2px solid black;
 }
 
 .region.service-column.right-column {
-  /*border-top-right-radius: 15px;*/
   border-bottom-right-radius: 20px;
   border-right: 2px solid black;
 }
 
-.legend-item.version-0,
-.region.service-column.left-column.version-0,
-.region.service-column.right-column.version-0,
-.region.service-column.version-0 {
+.version-0 {
   background-color: #89C541;
 }
 
-.legend-sub-item.version-1,
-.region.service-column.left-column.version-1,
-.region.service-column.right-column.version-1,
-.region.service-column.version-1 {
+.version-1 {
   background-color: #cdd422;
 }
 
-.legend-sub-item.version-2,
-.region.service-column.left-column.version-2,
-.region.service-column.right-column.version-2,
-.region.service-column.version-2 {
+.version-2 {
   background-color: #FFA500;
 }
 
-.legend-sub-item.version-3,
-.region.service-column.left-column.version-3,
-.region.service-column.right-column.version-3,
-.region.service-column.version-3 {
+.version-3 {
   background-color: #008080;
 }
 
-.legend-item.version-match-error,
-.region.service-column.left-column.version-match-error,
-.region.service-column.right-column.version-match-error,
-.region.service-column.version-match-error {
+.version-match-error {
   background-color: red;
 }
 
-.legend-item.version-na,
-.region.service-column.left-column.version-na,
-.region.service-column.right-column.version-na,
-.region.service-column.version-na {
+.version-na {
   background-color: #c9c9c9;
 }
 
@@ -242,4 +226,95 @@ div#services-table-rows {
 
 .service-deploy-time span {
   display: none;
+}
+
+/* Service Page */
+.deploy {
+    border-width: 1px 2px 2px 2px;
+    border-style: solid;
+    border-color: black;
+    padding: 20px;
+}
+
+.deployed-meta {
+    display: inline-block;
+    width: 100%;
+}
+
+.environment {
+  margin-bottom: 30px;
+}
+
+.environment-name {
+  text-align: center;
+  border-width: 2px 2px 1px 2px;
+  border-style: solid;
+  border-color: black;
+  background-color: darkgray;
+  color: white;
+}
+
+.deployed-at,
+.deployed-by,
+.deployed-sha,
+.deployed-version {
+  float: left;
+  width: 25%;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.deployed-version span,
+.deployed-sha span,
+.deployed-by span,
+.deployed-at span {
+  font-weight: bold;
+}
+
+pre {
+  outline: 1px solid #ccc;
+  padding: 5px;
+  width: 85%;
+  margin: auto;
+}
+
+pre.place-holder {
+  text-align: center;
+  font-weight: bold;
+}
+
+.deployed-configuration span.label {
+  color: black;
+  font-size: 1.3em;
+  text-align: center;
+  display: block;
+  cursor: pointer;
+}
+
+.deployed-configuration {
+  margin-top: 25px;
+}
+
+.json-string { color: green; }
+.json-number { color: darkorange; }
+.json-boolean { color: blue; }
+.json-null { color: magenta; }
+.json-key { color: red; }
+
+.hide {
+  display: none;
+}
+
+.caret {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #000000;
+}
+
+.dropup {
+  position: inherit;
+}
+
+.dropup .caret {
+  border-bottom: 8px dashed;
 }
