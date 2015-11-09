@@ -76,7 +76,7 @@ class DeploymentDAO extends VerificationTable with Logging {
                        (implicit session:Session): Try[Seq[DeploySummary]] = Try {
     val staging = """.*(staging).*""".r
     val retiredEnvs = """(azure-eastus-production)""".r
-    val srvsGrps = currentDeploymentQuery.list.filter(row => services match {
+    val rows = currentDeploymentQuery.list.filter(row => services match {
       case Some(s) => s.contains(getServiceAlias(row.service))
       case None => true
     })
@@ -85,10 +85,10 @@ class DeploymentDAO extends VerificationTable with Logging {
       case retiredEnvs(e) => false
       case _ => true
     })
-    .map(rowToModelDeploy)
-    .groupBy(x => getServiceAlias(x.service))
 
-    srvsGrps.map { // Breaking up previous chain of method calls to reduce cyclomatic complexity...
+    rows.map(rowToModelDeploy)
+    .groupBy(x => getServiceAlias(x.service))
+    .map {
       case (svc, dpls) => {
         val verList = dpls.map { x => (getEnvironmentAlias(x.environment), versionHash(x)) }
         .sortWith {
