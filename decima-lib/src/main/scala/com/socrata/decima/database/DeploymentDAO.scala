@@ -72,11 +72,12 @@ class DeploymentDAO extends VerificationTable with Logging {
     res.map(rowToModelDeploy)
   }
 
+  // scalastyle:ignore cyclomatic.complexity
   def currentSummary(services: Option[Array[String]])
                        (implicit session:Session): Try[Seq[DeploySummary]] = Try {
     val staging = """.*(staging).*""".r
     val retiredEnvs = """(azure-eastus-production)""".r
-    val rows = currentDeploymentQuery.list.filter(row => services match {
+    currentDeploymentQuery.list.filter(row => services match {
       case Some(s) => s.contains(getServiceAlias(row.service))
       case None => true
     })
@@ -85,8 +86,7 @@ class DeploymentDAO extends VerificationTable with Logging {
       case retiredEnvs(e) => false
       case _ => true
     })
-
-    rows.map(rowToModelDeploy)
+    .map(rowToModelDeploy)
     .groupBy(x => getServiceAlias(x.service))
     .map {
       case (svc, dpls) => {
