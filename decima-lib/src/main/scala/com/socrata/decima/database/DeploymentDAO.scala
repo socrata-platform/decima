@@ -2,6 +2,7 @@ package com.socrata.decima.database
 
 import java.sql.SQLException
 import java.security.MessageDigest
+import java.nio.charset.StandardCharsets
 import scala.math.Ordering._
 
 import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DeployResult, DuplicateDeploy}
@@ -130,7 +131,7 @@ class DeploymentDAO extends VerificationTable with Logging {
 
   def versionHash(deploy: Deploy): String = {
     val vString = deploy.version + deploy.serviceSha
-    MessageDigest.getInstance("SHA1").digest(vString.getBytes).map("%02X".format(_)).mkString
+    MessageDigest.getInstance("SHA1").digest(vString.getBytes(StandardCharsets.UTF_8)).map("%02X".format(_)).mkString
   }
 
   def environmentParityWithReference(reference: Deploy, deploy: Deploy): Boolean = {
