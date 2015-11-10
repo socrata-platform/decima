@@ -247,8 +247,10 @@ class DeploymentDAO extends VerificationTable with Logging {
 
   private def getServiceAlias(service: String): String = {
     val pgSoqlServerPattern = """^(soql-server-pg).*""".r
+    val secondaryWatcherSpandexPattern = """^(secondary-watcher-spandex).*""".r
     service match {
       case pgSoqlServerPattern(s) => "soql-server-pg"
+      case secondaryWatcherSpandexPattern(s) => "secondary-watcher-spandex"
       case _ => service
     }
   }

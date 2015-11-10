@@ -12,6 +12,14 @@ class DecimaServletSpec extends ScalatraSuite with FunSuiteLike {
 
   test("simple get should return 200") {
     get("/") {
+      println(response.body)
+      status should equal(200)
+    }
+  }
+
+  test("simple get on service should return 200") {
+    get("/service/core") {
+      println(response.body)
       status should equal(200)
     }
   }
