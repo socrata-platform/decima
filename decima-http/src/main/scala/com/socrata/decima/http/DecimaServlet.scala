@@ -17,13 +17,13 @@ class DecimaServlet extends ScalatraServlet with JacksonJsonSupport with Scalate
 
   get("/") {
     contentType = "text/html"
-    ssp("/WEB-INF/templates/views/index.ssp")
+    layoutTemplate("/WEB-INF/templates/views/index.ssp")
   }
 
   get(s"/service/:$serviceParamKey") {
     val service = params.get(serviceParamKey)
     contentType = "text/html"
-    ssp("/WEB-INF/templates/views/service.ssp", "service" -> service.get)
+    layoutTemplate("/WEB-INF/templates/views/service.ssp", "service" -> service.get)
   }
 
   get("/version") {
