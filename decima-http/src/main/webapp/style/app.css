@@ -304,3 +304,13 @@ pre.place-holder {
 .hide {
   display: none;
 }
+
+.caret {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #000000;
+}
+
+.dropup .caret {
+  border-bottom: 8px dashed;
+}

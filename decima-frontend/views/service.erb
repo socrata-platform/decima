@@ -50,9 +50,9 @@
             <div class="deployed-sha"><span>SHA: </span>{{deploy.service_sha}}</div>
           </div>
           <div class="deployed-configuration">
-            <span class="label">Configuration:</span>
+            <span class="label">Configuration <span class="caret"></span></span>
             <pre class="config hide">{{ printJson deploy.configuration }}</pre>
-            <pre class="place-holder">...</pre>
+            <pre class="place-holder">[hidden]</pre>
           </div>
         </div>
         {{/each}}

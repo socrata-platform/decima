@@ -55,9 +55,11 @@ window.decima.service = (function(w, $, undefined) {
         if ($(this).siblings('.config').is(':visible')) {
           $(this).siblings('.config').addClass('hide');
           $(this).siblings('.place-holder').removeClass('hide');
+          $(this).parent().removeClass('dropup');
         } else {
           $(this).siblings('.place-holder').addClass('hide');
           $(this).siblings('.config').removeClass('hide');
+          $(this).parent().addClass('dropup');
         }
       });
     },
