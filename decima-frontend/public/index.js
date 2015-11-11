@@ -1,0 +1,1 @@
+../../decima-http/src/main/webapp/script/app.js

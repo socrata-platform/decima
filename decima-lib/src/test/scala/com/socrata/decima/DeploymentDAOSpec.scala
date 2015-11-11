@@ -313,9 +313,38 @@ class DeploymentDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter
 
     "filter history by multiple service parameters" in {
       db.withSession { implicit session: Session =>
-        val deployHistory = dao.deploymentHistory(None, Option(Array("frontend", "phidippides")), defaultLimit).get
-        assert(deployHistory.length === 6)
-        deployHistory.count(_.environment == "production") should be (0)
+        val deployHistory = dao.deploymentHistory(None, Option(Array("frontend", "core")), defaultLimit).get
+        assert(deployHistory.length === 11)
+        deployHistory.count(_.environment == "production") should be (1)
+      }
+    }
+
+    "retrieve current deploy summary" in {
+      setupSoqlParityTest()
+      db.withSession { implicit session: Session =>
+        val deploySummary = dao.currentSummary(None).get
+        deploySummary.count(_.serviceAlias == "core") should be (1)
+        deploySummary.count(_.serviceAlias == "frontend") should be (1)
+        deploySummary.count(_.serviceAlias == "phidippides") should be (0)
+        deploySummary.count(_.serviceAlias == "soql-server-pg") should be (1)
+        deploySummary.length should be (3)
+        deploySummary.foreach { x =>
+          x.serviceAlias match {
+            case "core" =>  x.parity should be (false)
+            case "frontend" =>  x.parity should be (true)
+            case "soql-server-pg" =>  x.parity should be (true)
+          }
+        }
+      }
+    }
+
+    "filter current deploy summary by service" in {
+      setupSoqlParityTest()
+      db.withSession { implicit session: Session =>
+        val deploySummary = dao.currentSummary(Option(Array("soql-server-pg"))).get
+        deploySummary.length should be (1)
+        deploySummary.count(_.serviceAlias == "soql-server-pg") should be (1)
+        deploySummary.head.parity should be (true)
       }
     }
   }

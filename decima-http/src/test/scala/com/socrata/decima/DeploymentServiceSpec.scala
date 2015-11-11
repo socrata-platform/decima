@@ -2,7 +2,7 @@ package com.socrata.decima
 
 import com.socrata.decima.data_access.DeploymentAccessWithPostgres
 import com.socrata.decima.mocks.MockS3Access
-import com.socrata.decima.models.{AutoprodInfo, Deploy}
+import com.socrata.decima.models.{AutoprodInfo, Deploy, DeploySummary, Verification}
 import com.socrata.decima.http.{DeploymentService, ErrorMessage}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -19,6 +19,8 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
   addServlet(new DeploymentService(deployAccess, new MockS3Access), "/deploy/*")
 
   def parseDeployList(body: String): Seq[Deploy] = parse(body).camelizeKeys.extract[Seq[Deploy]]
+  def parseDeployVerificationList(body: String): Seq[Verification] = parse(body).camelizeKeys.extract[Seq[Verification]]
+  def parseDeploySummaryList(body: String): Seq[DeploySummary] = parse(body).camelizeKeys.extract[Seq[DeploySummary]]
 
   before {
     setUpDb()
@@ -168,6 +170,71 @@ class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeA
       get("/deploy/1") {
         val deploy = parse(body).camelizeKeys.extract[Deploy]
         deploy.id should be(1)
+      }
+    }
+  }
+
+  "The Deploy Service verification /deploy/ID/verification" should {
+    "allow verifying a deploy" in {
+      put("/deploy/2/verification", """{"status": "complete", "details": "whee!"}""") {
+        status should be (200)
+        val deploy = parse(body).camelizeKeys.extract[Verification]
+        deploy.deployId should be (2L)
+        deploy.status should be ("complete")
+        deploy.details should be (Some("whee!"))
+      }
+    }
+
+    "allow reading a deploy verification" in {
+      get("/deploy/1/verification") {
+        val verifications = parseDeployVerificationList(response.body)
+        verifications.length should be (2)
+        verifications.head.deployId should be (1L)
+        verifications.head.status should be ("completed")
+        verifications.last.deployId should be (1L)
+        verifications.last.status should be ("initiated")
+      }
+    }
+  }
+
+  "The Deploy Summary Service /deploy/summary GET" should {
+    "return 200 on a simple get" in {
+      get("/deploy/summary") {
+        status should be (200)
+      }
+    }
+
+    "summary should aggregate deploys" in {
+      setupSoqlParityTest()
+      get("/deploy/summary") {
+        val summaries = parseDeploySummaryList(response.body)
+        summaries.length should be (3)
+      }
+    }
+
+    "soql-server be in parity" in {
+      setupSoqlParityTest()
+      get("/deploy/summary") {
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server-pg" }
+        summaries.length should be (1)
+        summaries.head.parity should be (true)
+      }
+    }
+
+    "soql-server not be in parity" in {
+      setupSoqlNoParityTest()
+      get("/deploy/summary") {
+        val summaries = parseDeploySummaryList(response.body).filter { x => x.serviceAlias == "soql-server-pg" }
+        summaries.length should be (1)
+        summaries.head.parity should be (false)
+      }
+    }
+
+    "filter deployment summary by service" in {
+      get("/deploy/summary?service=core") {
+        status should be (200)
+        val summaries = parseDeploySummaryList(response.body)
+        summaries.length should be (1)
       }
     }
   }
