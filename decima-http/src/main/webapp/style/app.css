@@ -311,6 +311,10 @@ pre.place-holder {
   border-top: 8px solid #000000;
 }
 
+.dropup {
+  position: inherit;
+}
+
 .dropup .caret {
   border-bottom: 8px dashed;
 }
