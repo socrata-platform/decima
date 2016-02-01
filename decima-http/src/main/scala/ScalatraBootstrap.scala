@@ -1,6 +1,7 @@
 import javax.servlet.ServletContext
 
 import com.amazonaws.services.s3.AmazonS3Client
+import com.netflix.servo.monitor.Monitors
 import com.socrata.decima.config.DecimaHttpConfig
 import com.socrata.decima.data_access._
 import com.socrata.decima.database._

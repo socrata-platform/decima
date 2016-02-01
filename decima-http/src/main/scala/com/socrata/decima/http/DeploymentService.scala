@@ -1,6 +1,7 @@
 package com.socrata.decima.http
 
 
+import com.netflix.servo.monitor._
 import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DuplicateDeploy}
 import com.socrata.decima.data_access.{S3AccessBase, _}
 import com.socrata.decima.models.{AutoprodInfo, Deploy, Verification}
@@ -22,6 +23,18 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
   val idParamKey = "id"
   val defaultLimit = 100
 
+  val getRoot: Counter = Monitors.newCounter("http_get_deploy")
+  val putRoot: Counter = Monitors.newCounter("http_put_deploy")
+  val putAutoprod: Counter = Monitors.newCounter("http_put_deploy_autoprod")
+  val getServiceId: Counter = Monitors.newCounter("http_get_deploy_serviceid")
+  val getHistory: Counter = Monitors.newCounter("http_get_deploy_history")
+  val getVerification: Counter = Monitors.newCounter("http_get_deploy_verification")
+  val putVerification: Counter = Monitors.newCounter("http_put_deploy_verification")
+  val getSummary: Counter = Monitors.newCounter("http_get_deploy_summary")
+  val deployCreatedCounter: Counter = Monitors.newCounter("deploy_created")
+  val deployDuplicateCounter: Counter = Monitors.newCounter("deploy_duplicate")
+  Monitors.registerObject(this)
+
   // TODO: look up commands in scalatra
 
   /**
@@ -34,6 +47,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
     val services = params.get(serviceParamKey).map(_.split(","))
     val environments = params.get(environmentParamKey).map(_.split(","))
 
+    getRoot.increment(1)
     deploymentAccess.currentDeploymentState(environments, services).get
   }
 
@@ -42,6 +56,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
    * The call returns the created Deploy object (with current timestamp and new ID)
    */
   put("/") {
+    putRoot.increment(1)
     logger.info(s"Received deploy: $parsedBody")
     createDeploy(parsedBody.extract[Deploy])
   }
@@ -60,6 +75,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
       }
     }
     val buildInfo = s3Access.getBuildInfo(autoprodInfo.project, buildId)
+    putAutoprod.increment(1)
     createDeploy(AutoprodUtils.infoToDeployModel(autoprodInfo, buildInfo))
   }
 
@@ -69,6 +85,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
    */
   get(s"/:$idParamKey") {
     val deployId = params(idParamKey).toLong
+    getServiceId.increment(1)
     deploymentAccess.deploymentById(deployId).get
   }
 
@@ -84,6 +101,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
     val environments = params.get(environmentParamKey).map(_.split(","))
     val limit = params.getOrElse(limitParamKey, defaultLimit.toString).toInt
 
+    getHistory.increment(1)
     deploymentAccess.deploymentHistory(environments, services, limit).get
   }
 
@@ -101,6 +119,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
     )).extract[Verification]
 
     val newVerification = deploymentAccess.createVerification(verification).get
+    putVerification.increment(1)
     logger.info(s"Created verification event for deploy $deployId: $newVerification")
     newVerification
   }
@@ -112,6 +131,7 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
   get(s"/:$idParamKey/verification") {
     val limit = params.get(limitParamKey).map(_.toInt).getOrElse(defaultLimit)
     val deployId = params(idParamKey).toLong
+    getVerification.increment(1)
     deploymentAccess.verificationHistory(Option(deployId), limit).get
   }
 
@@ -122,15 +142,18 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
    */
   get("/summary") {
     val services = params.get(serviceParamKey).map(_.split(","))
+    getSummary.increment(1)
     deploymentAccess.currentDeploymentSummary(services).get
   }
 
   private def createDeploy(deploy: Deploy): AnyRef = {
     deploymentAccess.createDeploy(deploy).get match {
       case DeployCreated(createdDeploy) =>
+        deployCreatedCounter.increment(1)
         logger.info("Created deploy event: " + createdDeploy.toString)
         createdDeploy
       case DuplicateDeploy(service, environment, deployedAt) =>
+        deployDuplicateCounter.increment(1)
         logger.error(s"Duplicate deploy event for service '$service' in environment '$environment' at '$deployedAt'")
         Conflict(s"Deploy already exists for service '$service' in environment '$environment' at '$deployedAt'")
     }
