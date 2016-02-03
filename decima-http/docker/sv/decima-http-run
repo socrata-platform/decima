@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -ev
+
+SERVICE_JAR="$SERVICE_ROOT/$SERVICE_ARTIFACT"
+
+/bin/env_parse /etc/${SERVICE_CONFIG}.j2
+
+exec /sbin/setuser socrata /usr/bin/java \
+    -Xmx${JAVA_XMX} \
+    -Xms${JAVA_XMX} \
+    -Dconfig.file=/etc/${SERVICE_CONFIG} \
+    -Dlogback.configurationFile=/etc/${LOGBACK_CONFIG} \
+    -jar $SERVICE_JAR
