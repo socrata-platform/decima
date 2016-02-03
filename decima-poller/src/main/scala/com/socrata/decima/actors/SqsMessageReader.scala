@@ -6,6 +6,7 @@ import akka.actor.ActorRef
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model.{ReceiveMessageRequest, ReceiveMessageResult}
 import com.fasterxml.jackson.core.JsonParseException
+import com.netflix.servo.monitor._
 import com.socrata.decima.actors.DeployConsumer.DeployMessage
 import com.socrata.decima.actors.SqsActor.SqsMessageMetadata
 import com.socrata.decima.actors.SqsMessageFinalizer.FinalizeSqsMessage
@@ -29,6 +30,12 @@ class SqsMessageReader(sqsClient: AmazonSQSAsync,
   // scalastyle:ignore import.grouping
   import SqsMessageReader._
   // scalastyle:ignore import.grouping
+
+  val messagesRecieved: Counter = Monitors.newCounter("sqsMessagesRecieved")
+  val invalidMessages: Counter = Monitors.newCounter("sqsMessagesInvalid")
+  val missingKey: Counter = Monitors.newCounter("sqsMessagesMissingKey")
+  val messageSuccess: Counter = Monitors.newCounter("sqsMessagesSuccess")
+  Monitors.registerObject(this)
 
   implicit val jsonFormats = JsonFormats.Formats
   var messageReceivedFuture: Future[ReceiveMessageResult] = _
@@ -54,6 +61,7 @@ class SqsMessageReader(sqsClient: AmazonSQSAsync,
         val result = messageReceivedFuture.get()
         val messages = result.getMessages.asScala
         log.debug(s"Received ${messages.length} new deploy messages.")
+        messagesRecieved.increment(messages.length)
         messages.foreach { message =>
           val body = message.getBody
           val metadata = SqsMessageMetadata(message.getReceiptHandle)
@@ -64,15 +72,18 @@ class SqsMessageReader(sqsClient: AmazonSQSAsync,
             val deployedAt = json \ "deployedAt"
             log.info(s"deployedAt field is $deployedAt")
             if (deployedAt == JNothing) {
+              missingKey.increment(1)
               log.error("Deploy does not contain deployed_at key, refusing to process message!")
               messageFinalizer ! FinalizeSqsMessage(metadata)
             } else {
+              messageSuccess.increment(1)
               val deploy = json.extract[Deploy]
               log.debug(s"Successfully parsed deploy: $deploy")
               deployConsumer ! DeployMessage(deploy, metadata)
             }
           } catch {
             case ex@(_: MappingException | _: JsonParseException) =>
+              invalidMessages.increment(1)
               log.error(s"Unable to parse message body: '$body'. Signalling complete processing")
               log.error(s"Exception: $ex")
               messageFinalizer ! FinalizeSqsMessage(metadata)

@@ -12,7 +12,11 @@ object DecimaHttp {
     scalateSettings ++
       Seq(
         mainClass := Some("com.socrata.decima.JettyLauncher"),
-        libraryDependencies ++= Groups.Scalatra
+        libraryDependencies ++=
+          Groups.Scalatra ++
+          Seq(
+            servo
+          )
       )
 
   lazy val plugins: Seq[Plugins.Basic] = Seq(

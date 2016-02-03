@@ -12,7 +12,8 @@ object DecimaPoller {
         libraryDependencies ++=
           Groups.Akka ++
           Seq(
-            awsSqs
+            awsSqs,
+            servo
           ),
         ScoverageSbtPlugin.ScoverageKeys.coverageMinimum := 50 // for now, decrease required minimum code coverage
       )

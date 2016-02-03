@@ -1,4 +1,4 @@
-FROM socrata/java
+FROM socrata/runit-java8
 
 # Service specific settings.
 ENV PROJECT_NAME decima-http
@@ -29,7 +29,7 @@ ENV BUILD_ARTIFACTS_BUCKET "socrata-build-artifacts-us-west-2"
 ENV LOG_LEVEL info
 
 # Add other required resources to the container
-ADD ship.d /etc/ship.d
-ADD ${LOGBACK_CONFIG} /etc/
-ADD ${SERVICE_CONFIG}.j2 /etc/
-ADD ${SERVICE_ARTIFACT} ${SERVICE_ROOT}
+COPY ${LOGBACK_CONFIG} /etc/
+COPY ${SERVICE_CONFIG}.j2 /etc/
+COPY ${SERVICE_ARTIFACT} ${SERVICE_ROOT}
+COPY sv/decima-http-run /etc/service/decima-http/run

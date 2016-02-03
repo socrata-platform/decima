@@ -31,6 +31,7 @@ object Dependencies {
   val akkaTestkit     = "com.typesafe.akka"      %% "akka-testkit"         % AkkaVersion
   val scalaTest       = "org.scalatest"          %% "scalatest"            % "2.2.4"
   val scalaMock       = "org.scalamock"          %% "scalamock-scalatest-support" % "3.2"
+  val servo           = "com.netflix.servo"      %  "servo-core"           % "0.8.0"
 
   object Groups {
     val Json4s = Seq(
