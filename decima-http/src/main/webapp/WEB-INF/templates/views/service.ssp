@@ -27,7 +27,7 @@
             <div class="legend-sub-item version-3"></div>
             <div class="legend-text">Does Not Match RC</div>
           </div>
-          <div class="legend-item version-na">No Data</div>
+          <div class="legend-item version-na">No Data or Hidden</div>
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@
             <div class="deployed-by"><span>Deployed By: </span>{{deploy.deployed_by}}</div>
             <div class="deployed-version"><span>Version: </span>{{deploy.version}}</div>
             <div class="deployed-sha"><span>SHA: </span>{{deploy.service_sha}}</div>
+            <div class="delete"><a href="/deploy/{{deploy.id}}/delete" title="Delete this deploy record">X</a></div>
           </div>
           <div class="deployed-configuration">
             <span class="label">Configuration <span class="caret"></span></span>

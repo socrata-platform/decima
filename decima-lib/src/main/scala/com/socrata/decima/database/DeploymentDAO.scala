@@ -49,6 +49,14 @@ class DeploymentDAO extends VerificationTable with Logging {
     }
   }
 
+  def deleteDeploy(deployId: Long)(implicit session: Session): Try[Unit] = {
+    Try {
+      session.withTransaction {
+        deleteByIdQuery(deployId).execute
+      }
+    }
+  }
+
   def createVerification(verification: Verification)
                         (implicit session: Session): Try[Verification] = Try {
     session.withTransaction {
@@ -179,7 +187,8 @@ class DeploymentDAO extends VerificationTable with Logging {
       configuration = deploy.configuration,
       deployedBy = deploy.deployedBy,
       deployMethod = deploy.deployMethod,
-      deployedAt = TimeUtils.toSqlTimestamp(deploy.deployedAt)
+      deployedAt = TimeUtils.toSqlTimestamp(deploy.deployedAt),
+      deletedAt = null
     )
   }
 

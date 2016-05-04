@@ -26,6 +26,6 @@ object JettyLauncher extends App {
   context.addServlet(classOf[DefaultServlet], rootPath)
 
   server.setHandler(context)
-  server.start
-  server.join
+  server.start()
+  server.join()
 }

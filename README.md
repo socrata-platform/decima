@@ -10,13 +10,15 @@ Most of the documentation is kept on [apiary](http://docs.decima.apiary.io).
 Locally:
 ```sh
 $ sbt
-> decima-service/container:start
-> decima-service/browse
+> decima-http/container:start
+> decima-http/browse
 ```
 
 If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
 
 * auto-compile on save: `> ~ ;copy-resources;aux-compile`
+
+* stop container: `decima-http/container:stop`
 
 Docker:
 * See the Docker [README](docker/README.md) for information on creating the container.

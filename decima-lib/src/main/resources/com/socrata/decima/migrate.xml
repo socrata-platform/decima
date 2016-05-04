@@ -41,4 +41,14 @@
     <changeSet author="Andrew Burnell" id="20150923-add-deploy-unique-constraint">
         <addUniqueConstraint tableName="deploys" columnNames="service,environment,deployed_at"/>
     </changeSet>
+    <changeSet author="krah" id="20160503-add-soft-delete-column">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="deploys" columnName="deleted_at"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="deploys">
+            <column name="deleted_at" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

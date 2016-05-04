@@ -20,7 +20,8 @@ trait DeployTable {
                        configuration: Option[String],
                        deployedBy: String,
                        deployMethod: String,
-                       deployedAt: Timestamp)
+                       deployedAt: Timestamp,
+                       deletedAt: Timestamp)
 
   class Deploys(tag: Tag) extends Table[DeployRow](tag, "deploys") {
     // scalastyle:off
@@ -35,6 +36,7 @@ trait DeployTable {
     def deployedBy = column[String]("deployed_by")
     def deployMethod = column[String]("deploy_method")
     def deployedAt = column[Timestamp]("deployed_at")
+    def deletedAt = column[Timestamp]("deleted_at")
     def * = ( id,
               service,
               environment,
@@ -45,28 +47,38 @@ trait DeployTable {
               configuration,
               deployedBy,
               deployMethod,
-              deployedAt) <> (DeployRow.tupled, DeployRow.unapply)
+              deployedAt,
+              deletedAt) <> (DeployRow.tupled, DeployRow.unapply)
     // scalastyle:on
   }
 
   val deployTable = TableQuery[Deploys]
 
-  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<,
+  implicit val getDeployResult = GetResult(r => DeployRow(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<,
                                                           r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
 
   val currentDeploymentQuery = StaticQuery.queryNA[DeployRow]( """
                                   select a.id, a.service, a.environment,
                                     b.version, b.docker_tag, b.service_sha,
                                     b.docker_sha, b.configuration, b.deployed_by,
-                                    b.deploy_method, b.deployed_at
+                                    b.deploy_method, b.deployed_at, b.deleted_at
                                   from (
                                     select distinct deploys.service, deploys.environment, max(deploys.id) as id
                                     from deploys
+                                    where deploys.deleted_at is null
                                     group by deploys.service, deploys.environment) a,
                                   deploys b
                                   where a.id = b.id""")
 
+  def deleteByIdQuery(id: Long) = StaticQuery.updateNA(
+    s"""
+       |UPDATE deploys
+       |SET deleted_at=now()
+       |WHERE id=$id
+    """.stripMargin)
+
   object DeployCompiledQueries {
+
     private def lookupByIdQuery(id: Column[Long]) = deployTable.filter(d => d.id === id)
 
     val lookup = Compiled(lookupByIdQuery _)

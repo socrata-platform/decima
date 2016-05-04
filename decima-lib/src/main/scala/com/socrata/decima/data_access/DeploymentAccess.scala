@@ -16,6 +16,7 @@ object DeploymentAccess {
 
 trait DeploymentAccess {
   def createDeploy(deploy: Deploy): Try[DeployResult]
+  def deleteDeploy(deployId: Long): Try[Unit]
   def createVerification(verification: Verification): Try[Verification]
   def deploymentById(deployId: Long): Try[Deploy]
   def currentDeploymentSummary(services: Option[Array[String]]): Try[Seq[DeploySummary]]
@@ -27,42 +28,47 @@ trait DeploymentAccess {
 }
 
 case class DeploymentAccessWithPostgres(db: Database, dao: DeploymentDAO with DatabaseDriver) extends DeploymentAccess {
-  override def createDeploy(deploy: Deploy): Try[DeployResult] =
+  def createDeploy(deploy: Deploy): Try[DeployResult] =
     db.withSession { implicit session =>
       dao.createDeploy(deploy)
     }
 
-  override def currentDeploymentSummary(services: Option[Array[String]]): Try[Seq[DeploySummary]] =
+  def deleteDeploy(deployId: Long): Try[Unit] =
+    db.withSession { implicit session =>
+      dao.deleteDeploy(deployId)
+    }
+
+  def currentDeploymentSummary(services: Option[Array[String]]): Try[Seq[DeploySummary]] =
     db.withSession { implicit session =>
       dao.currentSummary(services)
     }
 
-  override def currentDeploymentState(environments: Option[Array[String]],
+  def currentDeploymentState(environments: Option[Array[String]],
                                       services: Option[Array[String]]): Try[Seq[Deploy]] =
     db.withSession { implicit session =>
       dao.currentDeployment(environments, services)
     }
 
-  override def deploymentHistory(environments: Option[Array[String]],
+  def deploymentHistory(environments: Option[Array[String]],
                                  services: Option[Array[String]],
                                  limit: Int): Try[Seq[Deploy]] =
     db.withSession { implicit session =>
       dao.deploymentHistory(environments, services, limit)
     }
 
-  override def createVerification(verification: Verification): Try[Verification] = {
+  def createVerification(verification: Verification): Try[Verification] = {
     db.withSession { implicit session =>
       dao.createVerification(verification)
     }
   }
 
-  override def verificationHistory(deployId: Option[Long], limit: Int): Try[Seq[Verification]] = {
+  def verificationHistory(deployId: Option[Long], limit: Int): Try[Seq[Verification]] = {
     db.withSession { implicit session =>
       dao.verificationHistory(deployId, limit)
     }
   }
 
-  override def deploymentById(deployId: Long): Try[Deploy] = {
+  def deploymentById(deployId: Long): Try[Deploy] = {
     db.withSession { implicit session =>
       dao.deploymentById(deployId)
     }

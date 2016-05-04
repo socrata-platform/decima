@@ -1,6 +1,5 @@
 package com.socrata.decima.http
 
-
 import com.netflix.servo.monitor._
 import com.socrata.decima.data_access.DeploymentAccess.{DeployCreated, DuplicateDeploy}
 import com.socrata.decima.data_access.{S3AccessBase, _}
@@ -13,7 +12,8 @@ import org.scalatra.Conflict
  * DeployController is responsible for handling requests to /deploy*
  * It contains methods for notifying Decima about deploy events, discovering the version of
  * services in an environment and getting the deploy history.
- * @param deploymentAccess  the database object to use for persistence.
+  *
+  * @param deploymentAccess  the database object to use for persistence.
  */
 class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBase) extends DecimaStack {
 
@@ -89,6 +89,16 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
     deploymentAccess.deploymentById(deployId).get
   }
 
+  delete(s"/:$idParamKey") {
+    val deployId = params(idParamKey).toLong
+    deleteDeploy(deployId)
+  }
+
+  get(s"/:$idParamKey/delete") {
+    val deployId = params(idParamKey).toLong
+    deleteDeploy(deployId)
+  }
+
   /**
    * A GET call to /deploy/history returns a JSON array with the last 100 deploys (by default)
    * It can be filtered by similar query parameters as /deploy:
@@ -157,5 +167,10 @@ class DeploymentService(deploymentAccess:DeploymentAccess, s3Access: S3AccessBas
         logger.error(s"Duplicate deploy event for service '$service' in environment '$environment' at '$deployedAt'")
         Conflict(s"Deploy already exists for service '$service' in environment '$environment' at '$deployedAt'")
     }
+  }
+
+  private def deleteDeploy(deployId: Long): String = {
+    deploymentAccess.deleteDeploy(deployId)
+    """{"status": "success"}"""
   }
 }

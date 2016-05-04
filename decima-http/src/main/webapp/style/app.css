@@ -254,12 +254,19 @@ div#services-table-rows {
   color: white;
 }
 
+.delete {
+  float: left;
+  width: 5;
+  text-align: center;
+  font-size: 1.3em;
+}
+
 .deployed-at,
 .deployed-by,
 .deployed-sha,
 .deployed-version {
   float: left;
-  width: 25%;
+  width: 24%;
   text-align: center;
   font-size: 1.3em;
 }
