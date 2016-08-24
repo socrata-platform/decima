@@ -1,133 +1,141 @@
-'use strict';
-
-window._OR = ",";
-
-function getUrlVars() {
-    // Blatantly stolen from http://stackoverflow.com/questions/4656843/jquery-get-querystring-from-url for
-    // reasons of expedience
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-var logicalEnvironments = [ "us-west", "eu-west", "fedramp" ];
+// ReactDOM.render(
+//   <h1>Hello, world!</h1>,
+//   document.getElementById('decima')
+// );
 
 
-var environmentMap = {
-  "staging": "staging",
-  "rc": "rc",
-  "us_west_2": "us-west",
-  "eu_west_1": "eu-west",
-  "fedramp": "fedramp"
-}
+var {PageHeader, ListGroup, ListGroupItem, Navbar, MenuItem, 
+      Nav, NavDropdown, NavItem, Jumbotron, Media, MediaItem, 
+      DropdownButton, Button, ButtonToolbar, Grid, Row, Col, 
+      Panel, Label} = window.ReactBootstrap
 
-var environmentColMap = {
-  "rc": "service-column left-column",
-  "us-west": "service-column left-column",
-  "eu-west": "service-column",
-  "fedramp": "service-column right-column"
-};
-
-var renderTableHeader = function() {
-  var template = Handlebars.compile($("#service-header").html());
-  $("#services-table-header").html("");
-  $("#services-table-header").append(template(logicalEnvironments));
-  $("#services-table-container").stickyTableHeaders();
-};
-
-window._data = undefined;
-
-var updateSearch = function() {
-  var newSearch = $("#service-filter").val(),
-      proto = window.location.protocol,
-      host = window.location.host,
-      path = window.location.pathname,
-      newurl = proto + "//" + host + path + '?filter=' + newSearch;
-  window.history.pushState({path:newurl},'',newurl);
-  renderDataIntoPage();
-}
-
-var filterServices = function(services, sFilter) {
-  if (typeof sFilter == "string") { sFilter = sFilter.split(_OR); }
-  if (sFilter.indexOf("") > -1) { delete sFilter.splice(sFilter.indexOf(""), 1); }
-  if (sFilter.length == 0) { return services; }
-
-  var newServices = [];
-  _.each(services, function(service) {
-    if (sFilter.reduce(function(p,n) { return p || !!service["service_alias"].match(n); }, false)) {
-      newServices.push(service)
-    }
-  });
-  return newServices;
-}
-
-var renderDataIntoPage = function(data) {
-  if (typeof data == "undefined") { data = window._data; }
-  else { window._data = data; }
-  var source = $("#service-template").html(),
-      template = Handlebars.compile(source),
-      qs = getUrlVars();
-
-  if (qs.indexOf('filter') > -1) { data = filterServices(data, qs['filter']); }
-
-  $("#services-table-rows").html("");
-
-  _.each(data, function(service){
-    service['env_parity'] = {}
-    _.each(service['environments'], function(deps, dEnv) {
-      var mappedDEnv = environmentMap[dEnv];
-      if (typeof mappedDEnv != "undefined") {
-        var mappendDEnvParity = _.reduce(deps, function(memo, dep) { return memo == dep.parity_status ? memo : 'version-match-error'; }, deps[0].parity_status);
-        service['env_parity'][mappedDEnv] = {
-          "parity": mappendDEnvParity,
-          "match_class": mappendDEnvParity,
-          "col_class": environmentColMap[mappedDEnv],
-          "environment": mappedDEnv
-        };
-      } else {
-        service['env_parity'][mappedDEnv] = {
-          "parity": false,
-          "match_class": "version-unknown",
-          "col_class": environmentColMap[mappedDEnv],
-          "environment": mappedDEnv
-        };
-      }
+var Decima = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentDidMount: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
     });
-    service['env_parity'] = _.map(logicalEnvironments, function(env) {
-      if (service['env_parity'][env]) {
-        return service['env_parity'][env];
-      } else {
-        return { "parity": false, "match_class": "version-na", "col_class": environmentColMap[env], "environment": env};
-      }
-    })
-    $("#services-table-rows").append(template(service));
-  });
+  },
+  render: function() {
+    return (
+      <div>
+          <PageHeader>Decima <small>Service version tracking</small></PageHeader>
+        <ServicesList data={this.state.data} />
+      </div>
+    );
+  }
+});
+
+var ServicesList = React.createClass({
+  render: function() {
+    var serviceNodes = this.props.data.map(function(service) {
+      return (
+        <Service key={service.service_alias} serviceData={service}/>
+      );
+    });
+    return (
+      <ListGroup>
+        {serviceNodes}
+      </ListGroup>
+    );
+  }
+});
+
+//var TeamsList = React.createClass({
+//  render: function() {
+//    return (
+//      <div className="teamsList">
+//        <Team teamName="Admin" />
+//        <Team teamName="Discovery" />
+//        <Team teamName="Other" />
+//      </div>
+//    );
+//  }
+//});
+//
+//var Team = React.createClass({
+//  render: function() {
+//    return (
+//      <div className="team">
+//        {this.props.teamName}
+//      </div>
+//    );
+//  }
+//});
+
+function getProductionStatus(environments){
+  if (environments.fedramp && environments.fedramp[0] && 
+    environments.eu_west_1 && environments.eu_west_1[0] && 
+    environments.fedramp[0].parity_status == environments.eu_west_1[0].parity_status) {
+
+    return (<Label>Production matches</Label>); 
+  } else {
+    return (<Label bsStyle="danger">Production Mismatch</Label>);
+  };
 }
 
-var refreshPage = function() {
-  if (!$('#services-table-rows').is(":visible")) { return; }
-  jQuery.get("/deploy/summary", {}, renderDataIntoPage, "json");
-};
+function getRCStatus(environments){
+  if (environments.fedramp && environments.fedramp[0] && 
+    environments.rc && environments.rc[0] && 
+    environments.fedramp[0].parity_status == environments.rc[0].parity_status) {
 
-$(document).ready(function() {
-  var qs = getUrlVars();
-  if (qs.indexOf('filter') > -1) {
-    var sFilter = qs['filter'];
-    if (typeof sFilter == "string") { sFilter = sFilter.split(_OR); }
-    if (sFilter.indexOf("") > -1) { delete sFilter.splice(sFilter.indexOf(""), 1); }
-    if (sFilter.length != 0) {
-      $("#service-filter").val(sFilter.join(_OR));
-      updateSearch()
-    }
+    return (<Label>RC matches</Label>); 
+  } else {
+    return (<Label bsStyle="warning">RC is ahead</Label>);
+  };
+}
+
+
+var Service = React.createClass({
+  render: function() {
+    return (
+      <ListGroupItem header={this.props.serviceData.service_alias}>
+        <Grid>
+          <Row>
+            <Col md={3}>{getProductionStatus(this.props.serviceData.environments)}</Col>
+            <Col md={3}>{getRCStatus(this.props.serviceData.environments)}</Col>
+            <Col md={3} mdOffset={3}><ActionDropdown /></Col>
+          </Row>
+        </Grid>
+      </ListGroupItem>
+    );
+  }
+});
+
+var ActionDropdown = React.createClass({
+  render: function() {
+    return (
+      <DropdownButton bsSize="xsmall" title = "Actions">
+        <MenuItem eventKey="1">Hide from UI</MenuItem>
+        <MenuItem eventKey="2">Move to another team</MenuItem>
+      </DropdownButton>
+    );
   }
 
-  $("#service-filter").keypress(updateSearch);
-  $("#service-filter").keyup(updateSearch);
-  refreshPage();
-  setInterval(refreshPage, 30000);
 });
+
+//var Deployment = React.createClass({
+//  render: function() {
+//    return (
+//      <div className="deployment">
+//        Hello, world! I am a Deployment of a Service in an environment.
+//      </div>
+//    );
+//  }
+//});
+
+
+ReactDOM.render(
+  <Decima url="/deploy/summary" />,
+  document.getElementById('decima')
+);
