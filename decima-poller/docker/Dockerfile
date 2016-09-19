@@ -1,4 +1,4 @@
-FROM socrata/java
+FROM socrata/java8
 
 # Service specific settings.
 ENV PROJECT_NAME decima-poller
