@@ -42,7 +42,7 @@ class AwsConfig(config: Config) extends Logging {
   // Client configuration for all aws services
   val clientConfig: ClientConfiguration = {
     val client = new ClientConfiguration()
-    if (sys.env.contains("http_proxy")) {
+    if (sys.env.contains("http_proxy") && !sys.env("http_proxy").isEmpty) {
       val proxyVar = sys.env("http_proxy")
       logger.info(s"Found proxy $proxyVar, attempting to set the client configuration")
       val proxyArgs = proxyVar.split("://").last.split(":")
