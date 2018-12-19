@@ -14,7 +14,7 @@ object BuildSettings {
         resolvers ++= Seq(
           Classpaths.typesafeReleases,
           "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
-          "Socrata Cloudbees" at "https://repository-socrata-oss.forge.cloudbees.com/release",
+          "Socrata Artifactory" at "https://repo.socrata.com/artifactory/libs-release",
           Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
         ),
         assemblyMergeStrategy in assembly := {
