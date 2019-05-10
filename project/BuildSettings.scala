@@ -13,9 +13,8 @@ object BuildSettings {
         crossScalaVersions := Seq("2.11.6"),
         resolvers ++= Seq(
           Classpaths.typesafeReleases,
-          "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
           "Socrata Artifactory" at "https://repo.socrata.com/artifactory/libs-release",
-          Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+          Resolver.url("bintray-sbt-plugins", url("https://repo.socrata.com/artifactory/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
         ),
         assemblyMergeStrategy in assembly := {
           case "mime.types" => MergeStrategy.first
@@ -24,7 +23,8 @@ object BuildSettings {
             oldStrategy(x)
         },
         ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages :=
-          ".*BuildInfo;.*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;"
+          ".*BuildInfo;.*ScalatraBootstrap;.*JettyLauncher;.*MigrateSchema;.*templates.*;.*Migration;",
+        publishTo := Some("Artifactory Realm" at "https://repo.socrata.com/artifactory/libs-release;build.timestamp=" + new java.util.Date().getTime)
       )
 
   def projectSettings(assembly: Boolean = false): Seq[Setting[_]] = {
