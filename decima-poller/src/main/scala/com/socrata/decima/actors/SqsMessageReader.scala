@@ -27,9 +27,7 @@ class SqsMessageReader(sqsClient: AmazonSQSAsync,
                        deployConsumer: ActorRef,
                        messageFinalizer: ActorRef)
   extends SqsActor(sqsClient, config) {
-  // scalastyle:ignore import.grouping
-  import SqsMessageReader._
-  // scalastyle:ignore import.grouping
+  import SqsMessageReader._ // scalastyle:ignore import.grouping
 
   val messagesRecieved: Counter = Monitors.newCounter("sqsMessagesRecieved")
   val invalidMessages: Counter = Monitors.newCounter("sqsMessagesInvalid")
@@ -41,8 +39,7 @@ class SqsMessageReader(sqsClient: AmazonSQSAsync,
   var messageReceivedFuture: Future[ReceiveMessageResult] = _
 
   override def postStop(): Unit = {
-    // scalastyle:ignore null simplify.boolean.expression
-    if (messageReceivedFuture != null && messageReceivedFuture.cancel(true)) {
+    if (messageReceivedFuture.cancel(true)) {
       log.warning("Cancelled in-flight receive request")
     }
     super.postStop()

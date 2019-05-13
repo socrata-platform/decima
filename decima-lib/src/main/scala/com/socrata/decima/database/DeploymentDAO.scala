@@ -22,10 +22,9 @@ object DeploymentDAO {
 class DeploymentDAO extends VerificationTable with Logging {
   self: DatabaseDriver => ()
 
-  // scalastyle:ignore import.grouping
-  import DeploymentDAO._
-  // scalastyle:ignore import.grouping
-  import self.driver.simple._
+
+  import DeploymentDAO._ // scalastyle:ignore import.grouping
+  import self.driver.simple._ // scalastyle:ignore import.grouping
 
   def createDeploy(deploy: Deploy)(implicit session: Session): Try[DeployResult] = {
     Try {
@@ -73,8 +72,7 @@ class DeploymentDAO extends VerificationTable with Logging {
     res.map(rowToModelDeploy)
   }
 
-  // scalastyle:ignore cyclomatic.complexity
-  def currentSummary(services: Option[Array[String]])
+  def currentSummary(services: Option[Array[String]]) // scalastyle:ignore cyclomatic.complexity
                        (implicit session:Session): Try[Seq[DeploySummary]] = Try {
     val staging = """.*(staging).*""".r
     val retiredEnvs = """(azure-eastus-production)""".r
@@ -103,7 +101,6 @@ class DeploymentDAO extends VerificationTable with Logging {
         val refVersion = ref.map { _.version }
         val refDockerTag = ref.flatMap { _.dockerTag }
         val refServiceSha = ref.map { _.serviceSha }
-
         val envSummaries = envs.mapValues { _.map(deployToEnvironmentDeploySummary(ref, verList, _)) }
         val parity = envSummaries.flatMap { case (k, v) => v.map { _.parityWithReference } }.reduceLeft (_ && _)
         // NOTE :: RC may not exists in this map...

@@ -14,6 +14,7 @@ object BuildSettings {
         resolvers ++= Seq(
           Classpaths.typesafeReleases,
           "Socrata Artifactory" at "https://repo.socrata.com/artifactory/libs-release",
+          "Mock" at "https://mvnrepository.com/artifact/org.scalamock/scalamock-scalatest-support",
           Resolver.url("bintray-sbt-plugins", url("https://repo.socrata.com/artifactory/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
         ),
         assemblyMergeStrategy in assembly := {
