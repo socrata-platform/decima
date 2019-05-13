@@ -13,8 +13,7 @@ object SqsMessageFinalizer {
 
 class SqsMessageFinalizer(sqsClient: AmazonSQSAsync, config: SqsConfig)
   extends SqsActor(sqsClient, config) {
-  // scalastyle:ignore import.grouping
-  import SqsMessageFinalizer._
+  import SqsMessageFinalizer._ // scalastyle:ignore import.grouping
 
   override def receive: PartialFunction[Any, Unit] = {
     case FinalizeSqsMessage(metadata: SqsMessageMetadata) => {

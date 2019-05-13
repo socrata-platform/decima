@@ -12,8 +12,7 @@ object DeployConsumer {
 }
 
 class DeployConsumer(deploymentAccess: DeploymentAccess, messageFinalizer: ActorRef) extends Actor with ActorLogging {
-  // scalastyle:ignore import.grouping
-  import DeployConsumer._
+  import DeployConsumer._ // scalastyle:ignore import.grouping
 
   override def preStart(): Unit = {
     log.info("Starting DeployConsumer")

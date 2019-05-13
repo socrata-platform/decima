@@ -2,9 +2,9 @@ package com.socrata.decima
 
 import com.socrata.decima.data_access.DeploymentAccess.DeployCreated
 import com.socrata.decima.models._
-import org.scalatest.{BeforeAndAfter, ShouldMatchers, WordSpec}
+import org.scalatest.{BeforeAndAfter, Matchers, WordSpec}
 
-class DeploymentDAOSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with H2DBSpecUtils {
+class DeploymentDAOSpec extends WordSpec with Matchers with BeforeAndAfter with H2DBSpecUtils {
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
   private val defaultLimit = 100
