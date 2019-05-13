@@ -1,6 +1,5 @@
 /*
   This Jenkinsfile is designed to provide PR building functionality for Decima
-
   Property of Socrata / Tyler Technologies
 */
 pipeline {
