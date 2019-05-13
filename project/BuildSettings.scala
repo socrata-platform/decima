@@ -14,7 +14,7 @@ object BuildSettings {
         resolvers ++= Seq(
           Classpaths.typesafeReleases,
           "Socrata Artifactory" at "https://repo.socrata.com/artifactory/libs-release",
-          Resolver.url("bintray-sbt-plugins", url("https://repo.socrata.com/artifactory/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+          Resolver.url("bintray-sbt-plugins", url("https://repo.socrata.com/artifactory/ivy-libs-release-local/"))(Resolver.ivyStylePatterns)
         ),
         assemblyMergeStrategy in assembly := {
           case "mime.types" => MergeStrategy.first
