@@ -11,7 +11,7 @@ import org.scalatest._
 import org.scalatra.test.scalatest.ScalatraSuite
 
 class DeploymentServiceSpec extends ScalatraSuite with WordSpecLike with BeforeAndAfter
-                        with ShouldMatchers with H2DBSpecUtils {
+                        with Matchers with H2DBSpecUtils {
   import dao.driver.simple._ // scalastyle:ignore import.grouping
 
   implicit val formats = DefaultFormats ++ org.json4s.ext.JodaTimeSerializers.all
