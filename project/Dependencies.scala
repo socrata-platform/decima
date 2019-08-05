@@ -22,7 +22,7 @@ object Dependencies {
   val jettyPlus       = "org.eclipse.jetty"      %  "jetty-plus"                  % JettyVersion
   val jettyWebapp     = "org.eclipse.jetty"      %  "jetty-webapp"                % JettyVersion
   val liquibase       = "org.liquibase"          %  "liquibase-core"              % "3.3.3"
-  val postgresql      = "org.postgresql"         %  "postgresql"                  % "9.4-1201-jdbc4"
+  val postgresql      = "org.postgresql"         %  "postgresql"                  % "42.2.6"
   val slf4jApi        = "org.slf4j"              %  "slf4j-api"                   % "1.7.10"
   val snakeYaml       = "org.yaml"               %  "snakeyaml"                   % "1.15"
   val scalatraTest    = "org.scalatra"           %% "scalatra-scalatest"          % ScalatraVersion
