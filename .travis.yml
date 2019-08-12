@@ -1,8 +1,0 @@
-language: scala
-scala:
-  - 2.11.6
-script:
-  - sbt +compile +styleCheck +coverage +test +assembly
-env:
-  matrix:
-    secure: pQAlneFTv4IWjJwspd2zc8paUkoULYBWK2RgWVpFQyqoaV23kfyGNtyPm8AGaSxtFmDzWCE/2HVOicV7tLflW2JBzt2vsy9bSf0NRhBA0YRh6cU+gW/yHjX3G2qlGWqALjFC2lb0//NXTl9EXNPP0hCBJcPsCYAMs2wqzwlB5lgtTwtejLlpvyKAOd1X2IRj+QT+p39CMRYAeFjSfRdEvnhonFfmxVe4bx34UExdGIQXmnVj+nuSwxu1AwN038xT7WRQ/BO6zjNMynFLeTLJptnRePOh9O2LrmDWgDyVA6MXMSksn8lGiFsySA5lupSUZEiUAXZcw/6vL4yohXOlJQVNKWjyXJi/lQ/+5TPaSTCiHQS7j2LIoLTdHpZH/tYlsPZRYiOGM+42Ctyto/LG1BZwnuF9rBulie3oVHFCrPWeEqdl32F/iD9kfqDF6RDzfSctJSE4GErbhSZMNUophhszMc0TuahyNs8C8Q6oE7yYutm1ZjHMxQamcUgmvXHqqMR661LVkkZI/e+Cke2R0JFmgNdqs3KWsR60UCKT81GcJYiP9V+Y98EP3wulgVbHjVe/XnjtYYyx0PhL82LJEeitnDOTUUjLiapQUE3bdAxIGIYPo/E7Ez/TTBj/uz7WgWBVj/YDx6pJ5Thxzix/KdxGmstv1Z2dDfenAgNJza8=
