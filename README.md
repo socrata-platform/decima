@@ -51,3 +51,7 @@ $ java -cp target/scala-2.11/decima-assembly-*.jar com.socrata.decima.MigrateSch
 ```
 
 Or, just run the migrations by executing `bin/run_migrations.sh` with optional arguments: `migrate (default), redo [n], undo [n]`.
+
+## Ownership ##
+
+This service is currently owned by the Release Team.
