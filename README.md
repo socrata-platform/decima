@@ -54,4 +54,4 @@ Or, just run the migrations by executing `bin/run_migrations.sh` with optional a
 
 ## Ownership ##
 
-This service is currently owned by the Release Team.
+This service is currently owned by the D&I Release Team.
