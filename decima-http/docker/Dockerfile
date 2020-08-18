@@ -1,4 +1,4 @@
-FROM socrata/runit-java8
+FROM socrata/runit-java8-bionic
 
 # Service specific settings.
 ENV PROJECT_NAME decima-http
